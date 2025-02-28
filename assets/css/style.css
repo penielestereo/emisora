@@ -27,8 +27,8 @@ body {
 
 /* Imagen central */
 .central img {
-    width: 300%;
-    max-width: 300px; /* Tamaño máximo para la imagen central */
+    width: 500%;
+    max-width: 500px; /* Tamaño máximo para la imagen central */
 }
 
 /* Logo */
