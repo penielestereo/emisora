@@ -27,8 +27,8 @@ body {
 
 /* Imagen central */
 .central img {
-    width: 500%;
-    max-width: 500px; /* Tamaño máximo para la imagen central */
+    width: 300%;
+    max-width: 300px; /* Tamaño máximo para la imagen central */
 }
 
 /* Logo */
@@ -118,13 +118,13 @@ body {
     /* Ajustar el contenedor principal */
     .container {
         width: 90%; /* Ocupa el 90% del ancho de la pantalla */
-        height: auto; /* Permite que la altura se ajuste automáticamente */
+        height: 100%; /* Permite que la altura se ajuste automáticamente */
         padding: 20px; /* Añadir espacio alrededor */
     }
 
     /* Ajustar el logo */
     .logo img {
-        width: 80%; /* Reducir el tamaño para pantallas pequeñas */
+        width: 100%; /* Reducir el tamaño para pantallas pequeñas */
         max-width: 150px; /* Límite máximo */
     }
 
