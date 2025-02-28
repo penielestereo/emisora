@@ -43,10 +43,10 @@
         <img src="assets/img/menu.png" alt="Menú" id="menuIcon">
       </button>
       <div id="menuOptions" class="menu-options">
-        <a href="https://www.facebook.com" target="_blank">
+        <a href="fb://profile/100064812003799" target="_blank">
           <button class="btn"><img src="assets/img/facebook.png" alt="Facebook"></button>
         </a>
-        <a href="https://www.instagram.com" target="_blank">
+        <a href="https://www.instagram.com/ministerioalasnacionespeniel" target="_blank">
           <button class="btn"><img src="assets/img/instagram.png" alt="Instagram"></button>
         </a>
         <a href="https://www.youtube.com" target="_blank">
@@ -76,16 +76,17 @@
       deferredPrompt = e;
 
       // Crear botón de instalación
-      installButton.textContent = "Instalar Peniel Estéreo";
-      installButton.style.position = "fixed";
-      installButton.style.bottom = "20px";
-      installButton.style.right = "20px";
-      installButton.style.backgroundColor = "#2196f2";
-      installButton.style.color = "white";
-      installButton.style.border = "none";
-      installButton.style.padding = "10px";
-      installButton.style.borderRadius = "5px";
-      installButton.style.zIndex = "1000";
+      nstallButton.textContent = "Instalar Peniel Estéreo";
+installButton.style.position = "fixed";
+installButton.style.bottom = "20px";
+installButton.style.left = "50%";  // Posiciona el botón al 50% desde la izquierda
+installButton.style.transform = "translateX(-50%)";  // Ajusta el botón para que se centre
+installButton.style.backgroundColor = "#2196f2";
+installButton.style.color = "white";
+installButton.style.border = "none";
+installButton.style.padding = "10px";
+installButton.style.borderRadius = "5px";
+installButton.style.zIndex = "1000";
 
       document.body.appendChild(installButton);
 
@@ -103,5 +104,8 @@
       });
     });
   </script>
+</body>
+</html>
+
 </body>
 </html>
