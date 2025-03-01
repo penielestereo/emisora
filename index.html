@@ -37,6 +37,19 @@
       </button>
     </div>
 
+    <!-- Botón Pedir Canción -->
+    <button id="btnPedirCancion" class="boton-flotante">🎵 Pedir Canción</button>
+
+    <!-- Modal para buscar canción -->
+    <div id="modal" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar" onclick="cerrarModal()">&times;</span>
+            <h2>Busca una canción</h2>
+            <input type="text" id="buscador" placeholder="Escribe el nombre de la canción..." oninput="buscarCancion()">
+            <ul id="listaCanciones"></ul>
+        </div>
+    </div>
+
     <!-- Botón Menú -->
     <div class="menu-btn-container">
       <button id="menuBtn" class="btn">
@@ -76,17 +89,17 @@
       deferredPrompt = e;
 
       // Crear botón de instalación
-      nstallButton.textContent = "Instalar Peniel Estéreo";
-installButton.style.position = "fixed";
-installButton.style.bottom = "20px";
-installButton.style.left = "50%";  // Posiciona el botón al 50% desde la izquierda
-installButton.style.transform = "translateX(-50%)";  // Ajusta el botón para que se centre
-installButton.style.backgroundColor = "#2196f2";
-installButton.style.color = "white";
-installButton.style.border = "none";
-installButton.style.padding = "10px";
-installButton.style.borderRadius = "5px";
-installButton.style.zIndex = "1000";
+      installButton.textContent = "Instalar Peniel Estéreo";
+      installButton.style.position = "fixed";
+      installButton.style.bottom = "20px";
+      installButton.style.left = "50%";
+      installButton.style.transform = "translateX(-50%)";
+      installButton.style.backgroundColor = "#2196f2";
+      installButton.style.color = "white";
+      installButton.style.border = "none";
+      installButton.style.padding = "10px";
+      installButton.style.borderRadius = "5px";
+      installButton.style.zIndex = "1000";
 
       document.body.appendChild(installButton);
 
@@ -107,5 +120,4 @@ installButton.style.zIndex = "1000";
 </body>
 </html>
 
-</body>
 </html>
