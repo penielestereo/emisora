@@ -2,7 +2,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #2B2D42FF; /* Color de fondo */
+    background-color: #2B2D42FF;
     color: #ffffff;
     display: flex;
     justify-content: center;
@@ -17,31 +17,29 @@ body {
     align-items: center;
     justify-content: flex-start;
     width: 30%;
-    height: 90%; /* Ajustamos la altura del contenedor al 90% de la altura de la pantalla */
+    height: 90%;
     text-align: center;
     box-sizing: border-box;
     position: relative;
-    padding: 20px; /* Añadimos espacio alrededor del contenido */
-    overflow: hidden; /* Esto ocultará cualquier contenido fuera del contenedor */
-    
+    padding: 20px;
+    overflow: hidden;
 }
 
 /* Imagen central */
 .central img {
-
-    width: 90%; /* Ocupa el 80% del ancho */
+    width: 90%;
     display: block;
-    margin: 0 auto 10px; /* Espaciado inferior */
+    margin: 0 auto 10px;
 }
 
 /* Logo */
 .logo img {
-    width: 80%; /* La imagen ocupa el 60% del ancho */
-    height: auto; /* Mantiene la proporción de la imagen */
-    border-radius: 50%; /* Hace que la imagen tenga forma circular */
+    width: 80%;
+    height: auto;
+    border-radius: 50%;
     display: block;
-    margin: 10px auto; /* Centra la imagen */
-    object-fit: cover; /* Asegura que la imagen se recorte para ajustarse al círculo sin distorsionar */
+    margin: 10px auto;
+    object-fit: cover;
 }
 
 /* Metadatos */
@@ -58,12 +56,14 @@ body {
     width: 70%;
     height: auto;
 }
+
 /* Reproductor de audio */
 .reproductor-container {
     position: absolute;
-    bottom: 20px; /* Subimos un poco el reproductor para dejar espacio para los botones */
+    bottom: 20px;
     left: 20px;
 }
+
 /* Botón Play/Pause */
 .btn {
     background-color: #2196f2ff;
@@ -78,11 +78,12 @@ body {
     width: 20px;
     height: 20px;
 }
+
 /* Botón de instalación */
 #installButton {
     position: absolute;
-    bottom: 20px; /* Lo coloca en la parte inferior */
-    left: 50%; /* Lo centra horizontalmente */
+    bottom: 20px;
+    left: 50%;
     transform: translateX(-50%);
     background-color: #2196f2;
     color: white;
@@ -123,76 +124,57 @@ body {
     width: 100%;
     height: 100%;
 }
-/* Menú desplegable */
-.menu-options {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    bottom: 60px;
-    right: 0;
-}
-
-.menu-options a button {
-    margin-bottom: 10px;
-    width: 40px;
-    height: 40px;
-}
-
-.menu-options a button img {
-    width: 100%;
-    height: 100%;
-}
 
 /* Mostrar opciones cuando el menú está abierto */
 .menu-options.open {
     display: flex;
 }
+
 /* Media query para dispositivos móviles */
 @media (max-width: 900px) {
     body {
-        overflow: hidden; /* Evita que la página se desplace verticalmente en dispositivos móviles */
+        overflow: hidden;
     }
 
     .container {
-        width: 100%;  /* El contenedor ocupa todo el ancho de la pantalla */
-        height: 100%; /* El contenedor ocupa el 100% de la altura de la pantalla */
-        position: fixed; /* Fija el contenedor para que se quede en la pantalla */
+        width: 100%;
+        height: 100%;
+        position: fixed;
         top: 0;
         left: 0;
-        padding: 3px; /* Añadimos algo de espacio alrededor del contenedor */
+        padding: 3px;
         overflow: hidden;
-        justify-content: flex-start; /* Asegura que el contenido esté alineado arriba */
+        justify-content: flex-start;
     }
 
     .central img {
         width: 100%;
         height: auto;
-        margin-bottom: 20px; /* Añadimos espacio entre la imagen y los metadatos */
+        margin-bottom: 20px;
     }
 
     .metadatos {
-        font-size: 1.6rem; /* Reducimos el tamaño de los metadatos para que quepan mejor */
+        font-size: 1.6rem;
         margin-top: 25px;
-        margin-bottom: 20px; /* Espacio debajo de los metadatos */
+        margin-bottom: 20px;
     }
 
     .logo img {
-        width: 80%; /* Reducimos el tamaño del logo */
-        max-width: 300px; /* Tamaño máximo del logo */
+        width: 80%;
+        max-width: 300px;
         margin-top: 20px;
     }
 
     .reproductor-container {
-        bottom: 20px; /* Subimos el reproductor para dar espacio a los botones */
+        bottom: 20px;
     }
 
     #installButton {
         position: absolute;
-        bottom: 60px; /* Ajustamos el botón de instalación para que no se salga de la pantalla */
+        bottom: 60px;
     }
 
     .menu-btn-container {
-        bottom: 20px; /* Subimos el botón del menú para que esté visible */
+        bottom: 20px;
     }
 }
-
