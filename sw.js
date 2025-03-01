@@ -1,9 +1,9 @@
 // Nombre del caché
-const CACHE_NAME = "peniel-cache-v1";
+const CACHE_NAME = "peniel-cache-v2";
 
 // Archivos a cachear
 const urlsToCache = [
-  "/",
+  "/webpwa/",
   "assets/css/style.css",
   "assets/js/script.js",
   "assets/img/logo.png",
@@ -22,10 +22,13 @@ const urlsToCache = [
 self.addEventListener("install", (event) => {
   console.log("Service Worker: Instalando...");
 
+  // Hacer que el nuevo SW se active de inmediato
+  self.skipWaiting();
+
   // Esperar a que se cacheen los archivos necesarios
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("Service Worker: Archivos cacheados correctamente");
+      console.log("Archivos cacheados correctamente");
       return cache.addAll(urlsToCache);
     })
   );
@@ -34,6 +37,9 @@ self.addEventListener("install", (event) => {
 // Activación del Service Worker
 self.addEventListener("activate", (event) => {
   console.log("Service Worker: Activado");
+
+  // Tomar el control inmediato de la página
+  self.clients.claim();
 
   // Eliminar cachés antiguas si el nombre del caché ha cambiado
   event.waitUntil(
