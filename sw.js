@@ -3,7 +3,7 @@ const CACHE_NAME = "peniel-cache-v2";
 
 // Archivos a cachear
 const urlsToCache = [
-  "/webpwa/",
+  "/emisora/",
   "assets/css/style.css",
   "assets/js/script.js",
   "assets/img/logo.png",
