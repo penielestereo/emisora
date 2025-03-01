@@ -70,5 +70,37 @@ document.addEventListener("DOMContentLoaded", () => {
       menuIcon.src = "assets/img/close.png"; // Cambiar a ícono de cerrar
     }
   });
-});  
 
+  // Eventos de instalación de la PWA
+  let deferredPrompt;
+
+  // Detecta cuando el navegador ofrece la opción de instalación
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevenir la instalación automática
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Mostrar el botón de instalación
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+      installButton.style.display = 'block'; // Mostrar el botón de instalación
+    }
+
+    // Manejador del clic en el botón de instalación
+    installButton.addEventListener('click', () => {
+      // Mostrar la opción de instalación
+      deferredPrompt.prompt();
+
+      // Espera la respuesta del usuario
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('El usuario aceptó la instalación');
+        } else {
+          console.log('El usuario rechazó la instalación');
+        }
+        deferredPrompt = null;
+        installButton.style.display = 'none'; // Ocultar el botón después de la acción
+      });
+    });
+  });
+});
