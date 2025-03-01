@@ -57,6 +57,11 @@
         </a>
       </div>
     </div>
+
+    <!-- Botón de instalación de la PWA (invisible por defecto) -->
+    <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
+      Instalar Peniel Estéreo
+    </button>
   </div>
 
   <script src="assets/js/script.js" defer></script>
@@ -70,27 +75,16 @@
     }
 
     let deferredPrompt;
-    const installButton = document.createElement("button");
 
     // Manejador para el evento beforeinstallprompt
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
 
-      // Crear el botón de instalación
-      installButton.textContent = "Instalar Peniel Estéreo";
-      installButton.style.position = "fixed";
-      installButton.style.bottom = "20px";
-      installButton.style.left = "50%";  // Posiciona el botón al 50% desde la izquierda
-      installButton.style.transform = "translateX(-50%)";  // Ajusta el botón para que se centre
-      installButton.style.backgroundColor = "#2196f2";
-      installButton.style.color = "white";
-      installButton.style.border = "none";
-      installButton.style.padding = "10px";
-      installButton.style.borderRadius = "5px";
-      installButton.style.zIndex = "1000";
-
-      document.body.appendChild(installButton);
+      const installButton = document.getElementById('installButton');
+      
+      // Mostrar el botón de instalación
+      installButton.style.display = "block";
 
       // Manejador del clic en el botón de instalación
       installButton.addEventListener("click", () => {
