@@ -23,12 +23,10 @@ body {
     position: relative;
     padding: 20px; /* Añadimos espacio alrededor del contenido */
     overflow: hidden; /* Esto ocultará cualquier contenido fuera del contenedor */
-    
 }
 
 /* Imagen central */
 .central img {
-
     width: 90%; /* Ocupa el 80% del ancho */
     display: block;
     margin: 0 auto 10px; /* Espaciado inferior */
@@ -58,12 +56,14 @@ body {
     width: 70%;
     height: auto;
 }
+
 /* Reproductor de audio */
 .reproductor-container {
     position: absolute;
     bottom: 20px; /* Subimos un poco el reproductor para dejar espacio para los botones */
     left: 20px;
 }
+
 /* Botón Play/Pause */
 .btn {
     background-color: #2196f2ff;
@@ -78,6 +78,7 @@ body {
     width: 20px;
     height: 20px;
 }
+
 /* Botón de instalación */
 #installButton {
     position: absolute;
@@ -123,30 +124,46 @@ body {
     width: 100%;
     height: 100%;
 }
-/* Menú desplegable */
-.menu-options {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    bottom: 60px;
-    right: 0;
-}
-
-.menu-options a button {
-    margin-bottom: 10px;
-    width: 40px;
-    height: 40px;
-}
-
-.menu-options a button img {
-    width: 100%;
-    height: 100%;
-}
 
 /* Mostrar opciones cuando el menú está abierto */
 .menu-options.open {
     display: flex;
 }
+
+/* Estilos para el formulario de solicitud de canción */
+#solicitudCancion {
+    display: none; /* Inicialmente oculto */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    color: #fff;
+    text-align: center;
+}
+
+#solicitudCancion input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#solicitudCancion button {
+    padding: 10px;
+    background-color: #2196f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#solicitudCancion button:hover {
+    background-color: #1976d2;
+}
+
 /* Media query para dispositivos móviles */
 @media (max-width: 900px) {
     body {
@@ -195,5 +212,4 @@ body {
         bottom: 20px; /* Subimos el botón del menú para que esté visible */
     }
 }
-
 
