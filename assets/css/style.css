@@ -130,38 +130,37 @@ body {
     display: flex;
 }
 
-/* Estilos para el formulario de solicitud de canción */
-#solicitudCancion {
-    display: none; /* Inicialmente oculto */
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    color: #fff;
-    text-align: center;
-}
-
-#solicitudCancion input {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#solicitudCancion button {
-    padding: 10px;
-    background-color: #2196f2;
+/* Botón de solicitud de canción */
+#requestSongBtn {
+    background-color: #ff5722;
     color: white;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
     cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-#solicitudCancion button:hover {
-    background-color: #1976d2;
+#requestSongBtn:hover {
+    background-color: #e64a19;
+}
+
+/* Mensaje de éxito */
+#successMessage {
+    display: none;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 1rem;
+    width: auto;
 }
 
 /* Media query para dispositivos móviles */
@@ -210,6 +209,10 @@ body {
 
     .menu-btn-container {
         bottom: 20px; /* Subimos el botón del menú para que esté visible */
+    }
+
+    #successMessage {
+        bottom: 100px; /* Ajustamos la posición del mensaje en móviles */
     }
 }
 
