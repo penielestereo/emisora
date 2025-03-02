@@ -1,5 +1,5 @@
 // Nombre del caché
-const CACHE_NAME = "peniel-cache-v2";
+const CACHE_NAME = "peniel-cache-v3"; // Asegúrate de cambiar la versión si actualizas archivos
 
 // Archivos a cachear
 const urlsToCache = [
@@ -29,7 +29,9 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Archivos cacheados correctamente");
-      return cache.addAll(urlsToCache);
+      return cache.addAll(urlsToCache).catch((error) => {
+        console.error("Error cacheando archivos:", error);
+      });
     })
   );
 });
@@ -47,7 +49,7 @@ self.addEventListener("activate", (event) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log("Service Worker: Eliminando caché antigua");
+            console.log("Service Worker: Eliminando caché antigua:", cache);
             return caches.delete(cache);
           }
         })
@@ -60,19 +62,15 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   console.log("Service Worker: Fetch", event.request.url);
 
-  // Responder desde el caché si es posible, o realizar la solicitud en red
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return (
-        response ||
-        fetch(event.request).then((fetchResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            // Cachear las nuevas solicitudes dinámicas (opcional)
-            cache.put(event.request, fetchResponse.clone());
-            return fetchResponse;
-          });
-        })
-      );
-    })
+    fetch(event.request)
+      .then((response) => {
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+      .catch(() => caches.match(event.request)) // Si la red falla, usa la caché
   );
 });
+
