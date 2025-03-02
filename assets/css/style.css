@@ -23,10 +23,12 @@ body {
     position: relative;
     padding: 20px; /* Añadimos espacio alrededor del contenido */
     overflow: hidden; /* Esto ocultará cualquier contenido fuera del contenedor */
+    
 }
 
 /* Imagen central */
 .central img {
+
     width: 90%; /* Ocupa el 80% del ancho */
     display: block;
     margin: 0 auto 10px; /* Espaciado inferior */
@@ -56,14 +58,12 @@ body {
     width: 70%;
     height: auto;
 }
-
 /* Reproductor de audio */
 .reproductor-container {
     position: absolute;
     bottom: 20px; /* Subimos un poco el reproductor para dejar espacio para los botones */
     left: 20px;
 }
-
 /* Botón Play/Pause */
 .btn {
     background-color: #2196f2ff;
@@ -78,7 +78,6 @@ body {
     width: 20px;
     height: 20px;
 }
-
 /* Botón de instalación */
 #installButton {
     position: absolute;
@@ -124,42 +123,30 @@ body {
     width: 100%;
     height: 100%;
 }
+/* Menú desplegable */
+.menu-options {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+}
+
+.menu-options a button {
+    margin-bottom: 10px;
+    width: 40px;
+    height: 40px;
+}
+
+.menu-options a button img {
+    width: 100%;
+    height: 100%;
+}
 
 /* Mostrar opciones cuando el menú está abierto */
 .menu-options.open {
     display: flex;
 }
-
-/* Botón Pedir Canción */
-.pedir-cancion-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-}
-
-#pedirCancionBtn {
-    background-color: #ff5722;
-    color: white;
-    font-size: 16px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s ease, transform 0.2s ease;
-}
-
-#pedirCancionBtn:hover {
-    background-color: #e64a19;
-    transform: scale(1.05);
-}
-
-#pedirCancionBtn:active {
-    transform: scale(0.95);
-}
-
 /* Media query para dispositivos móviles */
 @media (max-width: 900px) {
     body {
@@ -208,3 +195,5 @@ body {
         bottom: 20px; /* Subimos el botón del menú para que esté visible */
     }
 }
+
+
