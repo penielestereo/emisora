@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const songId = prompt("Ingresa el ID de la canción que deseas pedir:");
     if (songId) {
       try {
-        const response = await fetch("https://penielestereo.top/api/requests", {
+        const response = await fetch("https://penielestereo.top/api/station/1/request", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
