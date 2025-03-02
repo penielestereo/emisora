@@ -130,37 +130,34 @@ body {
     display: flex;
 }
 
-/* Botón de solicitud de canción */
-#requestSongBtn {
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-#requestSongBtn:hover {
-    background-color: #e64a19;
-}
-
-/* Mensaje de éxito */
-#successMessage {
-    display: none;
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 80px;
+/* Botón Pedir Canción */
+.pedir-cancion-container {
+    position: fixed;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    text-align: center;
-    font-size: 1rem;
-    width: auto;
+    z-index: 1000;
+}
+
+#pedirCancionBtn {
+    background-color: #ff5722;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#pedirCancionBtn:hover {
+    background-color: #e64a19;
+    transform: scale(1.05);
+}
+
+#pedirCancionBtn:active {
+    transform: scale(0.95);
 }
 
 /* Media query para dispositivos móviles */
@@ -210,9 +207,4 @@ body {
     .menu-btn-container {
         bottom: 20px; /* Subimos el botón del menú para que esté visible */
     }
-
-    #successMessage {
-        bottom: 100px; /* Ajustamos la posición del mensaje en móviles */
-    }
 }
-
