@@ -76,22 +76,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Detecta cuando el navegador ofrece la opción de instalación
   window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevenir la instalación automática
     e.preventDefault();
     deferredPrompt = e;
 
     // Mostrar el botón de instalación
     const installButton = document.getElementById('installButton');
     if (installButton) {
-      installButton.style.display = 'block'; // Mostrar el botón de instalación
+      installButton.style.display = 'block';
     }
 
     // Manejador del clic en el botón de instalación
     installButton.addEventListener('click', () => {
-      // Mostrar la opción de instalación
       deferredPrompt.prompt();
 
-      // Espera la respuesta del usuario
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('El usuario aceptó la instalación');
@@ -99,29 +96,36 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log('El usuario rechazó la instalación');
         }
         deferredPrompt = null;
-        installButton.style.display = 'none'; // Ocultar el botón después de la acción
+        installButton.style.display = 'none';
       });
     });
   });
+
+  // Función para solicitar canción a AzuraCast
+  const requestSong = async () => {
+    try {
+      const response = await fetch("https://penielestereo.top/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ song: "Canción solicitada" }) // Aquí puedes cambiar la lógica para que el usuario elija la canción
+      });
+
+      if (response.ok) {
+        successMessage.style.display = "block";
+        setTimeout(() => {
+          successMessage.style.display = "none";
+        }, 3000);
+      } else {
+        alert("Error al solicitar la canción.");
+      }
+    } catch (error) {
+      console.error("Error al solicitar la canción:", error);
+    }
+  };
 
   // Manejador del botón de solicitud de canción
   const requestSongBtn = document.getElementById("requestSongBtn");
   const successMessage = document.getElementById("successMessage");
 
-  requestSongBtn.addEventListener("click", () => {
-    fetch("https://penielestereo.top/api/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ song_id: "12345" }) // Cambia el song_id según sea necesario
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        successMessage.style.display = "block";
-        setTimeout(() => { successMessage.style.display = "none"; }, 3000);
-      }
-    })
-    .catch(error => console.error("Error al solicitar la canción:", error));
-  });
-
+  requestSongBtn.addEventListener("click", requestSong);
 });
