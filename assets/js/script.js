@@ -63,12 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cancion) {
       try {
         const response = await fetch("https://penielestereo.top/api/requests", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            song: cancion,
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ec406bb9aecc361e:2334e9fa0f3e6bc51a8406d8caf02ac2"
+    },
+    body: JSON.stringify({ song_id: "ID_DE_LA_CANCION" })
           }),
         });
         
