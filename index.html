@@ -37,11 +37,6 @@
       </button>
     </div>
 
-    <!-- Botón Pedir Canción -->
-    <div class="pedir-cancion-container">
-      <button id="pedirCancionBtn" class="btn">🎵 Pedir Canción</button>
-    </div>
-
     <!-- Botón Menú -->
     <div class="menu-btn-container">
       <button id="menuBtn" class="btn">
@@ -63,11 +58,48 @@
       </div>
     </div>
 
-    <!-- Botón de instalación de la PWA -->
-    <button id="installButton" style="display:none;">Instalar Peniel Estéreo</button>
+    <!-- Botón de instalación de la PWA (invisible por defecto) -->
+    <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
+      Instalar Peniel Estéreo
+    </button>
   </div>
 
   <script src="assets/js/script.js" defer></script>
+  
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch((error) => console.error("Error al registrar el Service Worker:", error));
+    }
+
+    let deferredPrompt;
+
+    // Manejador para el evento beforeinstallprompt
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const installButton = document.getElementById('installButton');
+      
+      // Mostrar el botón de instalación
+      installButton.style.display = "block";
+
+      // Manejador del clic en el botón de instalación
+      installButton.addEventListener("click", () => {
+        installButton.style.display = "none";  // Ocultar el botón de instalación
+        deferredPrompt.prompt();  // Muestra la opción de instalación
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("PWA instalada");
+          } else {
+            console.log("PWA no instalada");
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+  </script>
 </body>
 </html>
-
