@@ -59,19 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Funcionalidad del botón "Pedir Canción"
   pedirCancionBtn.addEventListener("click", async () => {
-    const cancion = prompt("Ingresa el nombre de la canción que deseas pedir:");
-    if (cancion) {
+    const songId = prompt("Ingresa el ID de la canción que deseas pedir:");
+    if (songId) {
       try {
         const response = await fetch("https://penielestereo.top/api/requests", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer ec406bb9aecc361e:2334e9fa0f3e6bc51a8406d8caf02ac2"
-    },
-    body: JSON.stringify({ song_id: "ID_DE_LA_CANCION" })
-          }),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ec406bb9aecc361e2334e9fa0f3e6bc51a8406d8caf02ac2"
+          },
+          body: JSON.stringify({ song_id: songId })
         });
-        
+
         if (response.ok) {
           alert("Tu canción ha sido solicitada con éxito.");
         } else {
