@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
+  const requestSongBtn = document.getElementById("requestSongBtn");
+  const successMessage = document.getElementById("successMessage");
+
+  if (!requestSongBtn) {
+    console.error("❌ ERROR: No se encontró el botón 'Pedir Canción'. Revisa el HTML.");
+    return;
+  }
 
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
@@ -99,30 +106,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Función para solicitar canción a AzuraCast
   const requestSong = async () => {
+    console.log("🎵 Enviando solicitud de canción...");
+
     try {
       const response = await fetch("https://penielestereo.top/api/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ song: "Canción solicitada" }) // Puedes cambiar esta lógica
+        body: JSON.stringify({ song_id: "12345" }) // Ajusta el ID de la canción según lo que necesites
       });
 
-      if (response.ok) {
+      const data = await response.json();
+      console.log("🔄 Respuesta del servidor:", data);
+
+      if (data.success) {
         successMessage.style.display = "block"; // Mostrar mensaje de éxito
         setTimeout(() => {
           successMessage.style.display = "none"; // Ocultar solo el mensaje después de 3 segundos
         }, 3000);
       } else {
-        alert("Error al solicitar la canción.");
+        alert("⚠️ No se pudo solicitar la canción.");
       }
     } catch (error) {
-      console.error("Error al solicitar la canción:", error);
+      console.error("❌ Error al solicitar la canción:", error);
     }
   };
 
-  // Manejador del botón de solicitud de canción
-  const requestSongBtn = document.getElementById("requestSongBtn");
-  const successMessage = document.getElementById("successMessage");
-
+  // Agregar evento al botón SOLO SI EXISTE
   requestSongBtn.addEventListener("click", requestSong);
 });
-
