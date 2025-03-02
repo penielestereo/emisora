@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-  const pedirCancionBtn = document.getElementById("pedirCancionBtn");
   
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
@@ -53,35 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Actualizar los metadatos cada 5 segundos
+  // Actualizar los metadatos cada 15 segundos
   fetchMetadata();
   setInterval(fetchMetadata, 5000);
-
-  // Funcionalidad del botón "Pedir Canción"
-  pedirCancionBtn.addEventListener("click", async () => {
-    const songId = prompt("Ingresa el ID de la canción que deseas pedir:");
-    if (songId) {
-      try {
-        const response = await fetch("https://penielestereo.top/api/station/1/request", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ec406bb9aecc361e2334e9fa0f3e6bc51a8406d8caf02ac2"
-          },
-          body: JSON.stringify({ song_id: songId })
-        });
-
-        if (response.ok) {
-          alert("Tu canción ha sido solicitada con éxito.");
-        } else {
-          alert("Hubo un error al solicitar la canción.");
-        }
-      } catch (error) {
-        console.error("Error al solicitar la canción:", error);
-        alert("No se pudo procesar la solicitud.");
-      }
-    }
-  });
 
   // Controlar el menú desplegable
   const menuBtn = document.getElementById("menuBtn");
@@ -101,16 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // Eventos de instalación de la PWA
   let deferredPrompt;
 
+  // Detecta cuando el navegador ofrece la opción de instalación
   window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevenir la instalación automática
     e.preventDefault();
     deferredPrompt = e;
+
+    // Mostrar el botón de instalación
     const installButton = document.getElementById('installButton');
     if (installButton) {
-      installButton.style.display = 'block';
+      installButton.style.display = 'block'; // Mostrar el botón de instalación
     }
 
+    // Manejador del clic en el botón de instalación
     installButton.addEventListener('click', () => {
+      // Mostrar la opción de instalación
       deferredPrompt.prompt();
+
+      // Espera la respuesta del usuario
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('El usuario aceptó la instalación');
@@ -118,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log('El usuario rechazó la instalación');
         }
         deferredPrompt = null;
-        installButton.style.display = 'none';
+        installButton.style.display = 'none'; // Ocultar el botón después de la acción
       });
     });
   });
