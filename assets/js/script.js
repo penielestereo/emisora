@@ -103,4 +103,72 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
+
+  // Mostrar formulario de solicitud de canción
+  const btnPedirCancion = document.getElementById("btnPedirCancion");
+  const solicitudCancion = document.getElementById("solicitudCancion");
+  
+  btnPedirCancion.addEventListener("click", () => {
+    solicitudCancion.style.display = solicitudCancion.style.display === "none" ? "block" : "none";
+  });
+
+  // Función para buscar canciones
+  document.getElementById("btnBuscar").addEventListener("click", async () => {
+    const query = document.getElementById("buscarCancion").value.trim();
+    const listaResultados = document.getElementById("listaResultados");
+
+    if (query === "") {
+      alert("Por favor, escribe el nombre de una canción.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://penielestereo.top/api/nowplaying/penielestereo`);
+      const data = await response.json();
+
+      // Filtrar canciones según el nombre
+      const resultados = data.station.requests.filter((song) =>
+        song.text.toLowerCase().includes(query.toLowerCase())
+      );
+
+      listaResultados.innerHTML = "";
+      if (resultados.length === 0) {
+        listaResultados.innerHTML = "<li>No se encontraron canciones</li>";
+        return;
+      }
+
+      resultados.forEach((song) => {
+        const li = document.createElement("li");
+        li.textContent = song.text;
+        li.dataset.songId = song.request_id;
+        li.addEventListener("click", solicitarCancion);
+        listaResultados.appendChild(li);
+      });
+
+    } catch (error) {
+      console.error("Error al buscar canciones:", error);
+    }
+  });
+
+  // Función para solicitar una canción
+  async function solicitarCancion(event) {
+    const songId = event.target.dataset.songId;
+
+    try {
+      const response = await fetch("https://penielestereo.top/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ request_id: songId }),
+      });
+
+      if (response.ok) {
+        alert("✅ Canción solicitada con éxito.");
+      } else {
+        alert("❌ No se pudo solicitar la canción.");
+      }
+    } catch (error) {
+      console.error("Error al solicitar la canción:", error);
+    }
+  }
 });
+
