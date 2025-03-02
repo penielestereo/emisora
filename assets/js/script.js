@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-  
+
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
     container: animacionContainer,
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Actualizar los metadatos cada 15 segundos
+  // Actualizar los metadatos cada 5 segundos
   fetchMetadata();
   setInterval(fetchMetadata, 5000);
 
@@ -104,71 +104,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Mostrar formulario de solicitud de canción
-  const btnPedirCancion = document.getElementById("btnPedirCancion");
-  const solicitudCancion = document.getElementById("solicitudCancion");
-  
-  btnPedirCancion.addEventListener("click", () => {
-    solicitudCancion.style.display = solicitudCancion.style.display === "none" ? "block" : "none";
+  // Manejador del botón de solicitud de canción
+  const requestSongBtn = document.getElementById("requestSongBtn");
+  const successMessage = document.getElementById("successMessage");
+
+  requestSongBtn.addEventListener("click", () => {
+    fetch("https://penielestereo.top/api/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ song_id: "12345" }) // Cambia el song_id según sea necesario
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        successMessage.style.display = "block";
+        setTimeout(() => { successMessage.style.display = "none"; }, 3000);
+      }
+    })
+    .catch(error => console.error("Error al solicitar la canción:", error));
   });
 
-  // Función para buscar canciones
-  document.getElementById("btnBuscar").addEventListener("click", async () => {
-    const query = document.getElementById("buscarCancion").value.trim();
-    const listaResultados = document.getElementById("listaResultados");
-
-    if (query === "") {
-      alert("Por favor, escribe el nombre de una canción.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://penielestereo.top/api/nowplaying/penielestereo`);
-      const data = await response.json();
-
-      // Filtrar canciones según el nombre
-      const resultados = data.station.requests.filter((song) =>
-        song.text.toLowerCase().includes(query.toLowerCase())
-      );
-
-      listaResultados.innerHTML = "";
-      if (resultados.length === 0) {
-        listaResultados.innerHTML = "<li>No se encontraron canciones</li>";
-        return;
-      }
-
-      resultados.forEach((song) => {
-        const li = document.createElement("li");
-        li.textContent = song.text;
-        li.dataset.songId = song.request_id;
-        li.addEventListener("click", solicitarCancion);
-        listaResultados.appendChild(li);
-      });
-
-    } catch (error) {
-      console.error("Error al buscar canciones:", error);
-    }
-  });
-
-  // Función para solicitar una canción
-  async function solicitarCancion(event) {
-    const songId = event.target.dataset.songId;
-
-    try {
-      const response = await fetch("https://penielestereo.top/api/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ request_id: songId }),
-      });
-
-      if (response.ok) {
-        alert("✅ Canción solicitada con éxito.");
-      } else {
-        alert("❌ No se pudo solicitar la canción.");
-      }
-    } catch (error) {
-      console.error("Error al solicitar la canción:", error);
-    }
-  }
 });
-
