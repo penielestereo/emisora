@@ -74,29 +74,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Eventos de instalación de la PWA
   let deferredPrompt;
 
-  // Detecta cuando el navegador ofrece la opción de instalación
-  window.addEventListener('beforeinstallprompt', (e) => {
+  window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    const installButton = document.getElementById("installButton");
 
-    // Mostrar el botón de instalación
-    const installButton = document.getElementById('installButton');
     if (installButton) {
-      installButton.style.display = 'block';
+      installButton.style.display = "block";
     }
 
-    // Manejador del clic en el botón de instalación
-    installButton.addEventListener('click', () => {
+    installButton.addEventListener("click", () => {
       deferredPrompt.prompt();
-
       deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('El usuario aceptó la instalación');
+        if (choiceResult.outcome === "accepted") {
+          console.log("El usuario aceptó la instalación");
         } else {
-          console.log('El usuario rechazó la instalación');
+          console.log("El usuario rechazó la instalación");
         }
         deferredPrompt = null;
-        installButton.style.display = 'none';
+        installButton.style.display = "none";
       });
     });
   });
@@ -107,13 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("https://penielestereo.top/api/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ song: "Canción solicitada" }) // Aquí puedes cambiar la lógica para que el usuario elija la canción
+        body: JSON.stringify({ song: "Canción solicitada" }) // Puedes cambiar esta lógica
       });
 
       if (response.ok) {
-        successMessage.style.display = "block";
+        successMessage.style.display = "block"; // Mostrar mensaje de éxito
         setTimeout(() => {
-          successMessage.style.display = "none";
+          successMessage.style.display = "none"; // Ocultar solo el mensaje después de 3 segundos
         }, 3000);
       } else {
         alert("Error al solicitar la canción.");
@@ -129,3 +125,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   requestSongBtn.addEventListener("click", requestSong);
 });
+
