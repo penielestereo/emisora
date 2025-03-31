@@ -74,4 +74,37 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
+// Agregar Firebase Messaging para manejar las notificaciones push
+
+// Importa Firebase y los módulos necesarios para manejar las notificaciones
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js');
+
+// Configura Firebase con tus credenciales
+firebase.initializeApp({
+  apiKey: "AIzaSyC2KTmkA-1znWUJxAociE0SygIsI-ZeeXg",
+  authDomain: "notificacionespeniel.firebaseapp.com",
+  projectId: "notificacionespeniel",
+  storageBucket: "notificacionespeniel.firebasestorage.app",
+  messagingSenderId: "634476182377",
+  appId: "1:634476182377:web:ef93780f0cfbf866451bf8",
+  measurementId: "G-L8Q4FJNGM7"
+});
+
+// Inicializa Firebase Messaging
+const messaging = firebase.messaging();
+
+// Maneja las notificaciones cuando la aplicación está en segundo plano
+messaging.onBackgroundMessage(function(payload) {
+  console.log('Mensaje recibido en segundo plano', payload);
+
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.icon || 'assets/img/logo.png', // Puedes cambiar el icono si lo deseas
+  };
+
+  // Muestra la notificación
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
 
