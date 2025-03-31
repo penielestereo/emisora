@@ -7,6 +7,58 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
+  
+  <!-- Scripts de Firebase -->
+  <script type="module">
+    // Importa las funciones necesarias desde Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
+
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2KTmkA-1znWUJxAociE0SygIsI-ZeeXg",
+      authDomain: "notificacionespeniel.firebaseapp.com",
+      projectId: "notificacionespeniel",
+      storageBucket: "notificacionespeniel.firebasestorage.app",
+      messagingSenderId: "634476182377",
+      appId: "1:634476182377:web:ef93780f0cfbf866451bf8",
+      measurementId: "G-L8Q4FJNGM7"
+    };
+
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Inicializa Firebase Messaging
+    const messaging = getMessaging(app);
+
+    // Solicita permiso para notificaciones
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        console.log("Permiso para notificaciones concedido");
+
+        // Obtén el token para poder enviar notificaciones push
+        getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
+          if (currentToken) {
+            console.log("Token de suscripción:", currentToken);
+            // Aquí puedes enviar el token a tu servidor
+          } else {
+            console.log("No se pudo obtener el token");
+          }
+        }).catch((err) => {
+          console.log("Error al obtener el token:", err);
+        });
+      }
+    });
+
+    // Escuchar mensajes cuando la aplicación está en primer plano
+    onMessage(messaging, (payload) => {
+      console.log("Mensaje recibido en primer plano:", payload);
+      // Aquí puedes manejar las notificaciones cuando la app esté abierta
+    });
+  </script>
+
 </head>
 <body>
   <div class="container">
@@ -65,11 +117,12 @@
   </div>
 
   <script src="assets/js/script.js" defer></script>
-  
+
   <script>
+    // Registra el Service Worker para que funcione en segundo plano
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/sw.js")
+        .register("/service-worker.js")
         .then(() => console.log("Service Worker registrado"))
         .catch((error) => console.error("Error al registrar el Service Worker:", error));
     }
