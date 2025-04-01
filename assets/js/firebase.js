@@ -3,11 +3,11 @@ import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/fireb
 
 // 🔥 Configuración de Firebase (Reemplaza con tus datos)
 const firebaseConfig = {
-  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  // 
+  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
   authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
   projectId: "notificacionespeniel-29ab3",
-  storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
-  messagingSenderId: "145535352146", 
+  storageBucket: "notificacionespeniel-29ab3.appspot.com", // 🔹 Corregido
+  messagingSenderId: "145535352146",
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
 };
 
@@ -20,36 +20,60 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
-      console.log("✅ Firebase Messaging Service Worker registrado:", registration);
+      console.log("✅ Service Worker registrado correctamente:", registration);
+      obtenerTokenFCM(registration);
     })
     .catch((error) => {
-      console.error("❌ Error registrando Firebase Messaging SW:", error);
+      console.error("❌ Error registrando Service Worker:", error);
     });
 }
 
-// 🚀 Solicitar permiso para recibir notificaciones
-const solicitarPermiso = async () => {
+// 🚀 Función para solicitar permiso y obtener el token
+const obtenerTokenFCM = async (registration) => {
   try {
     const permiso = await Notification.requestPermission();
-    if (permiso === "granted") {
-      console.log("✅ Permiso de notificación concedido");
-
-      // Obtener el token FCM
-      const token = await getToken(messaging, {
-        vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms", // 🔹 Reemplaza con tu VAPID Key
-      });
-
-      if (token) {
-        console.log("📌 Token FCM obtenido:", token);
-        // Enviar el token al servidor si es necesario
-      } else {
-        console.warn("⚠️ No se pudo obtener un token de notificación.");
-      }
-    } else {
+    if (permiso !== "granted") {
       console.warn("⚠️ Permiso de notificación denegado.");
+      return;
+    }
+
+    console.log("✅ Permiso de notificación concedido");
+
+    // Obtener el token FCM
+    const token = await getToken(messaging, {
+      vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms",
+      serviceWorkerRegistration: registration, // 🔹 Asignamos el SW
+    });
+
+    if (token) {
+      console.log("📌 Token FCM obtenido:", token);
+      suscribirATema(token);
+    } else {
+      console.warn("⚠️ No se pudo obtener un token de notificación.");
     }
   } catch (error) {
     console.error("❌ Error obteniendo el token:", error);
+  }
+};
+
+// 🔹 Suscribir automáticamente al usuario al tema "global"
+const suscribirATema = async (token) => {
+  try {
+    const respuesta = await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/global`, {
+      method: "POST",
+      headers: {
+        "Authorization": "key=TU_SERVER_KEY",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (respuesta.ok) {
+      console.log("✅ Suscrito automáticamente al tema 'global'");
+    } else {
+      console.warn("⚠️ No se pudo suscribir al tema.");
+    }
+  } catch (error) {
+    console.error("❌ Error al suscribir al tema:", error);
   }
 };
 
@@ -58,12 +82,8 @@ onMessage(messaging, (payload) => {
   console.log("📬 Mensaje recibido en primer plano:", payload);
   const { title, body } = payload.notification;
 
-  // Mostrar notificación nativa
   new Notification(title, {
     body,
     icon: "/assets/icons/icon.png",
   });
 });
-
-// 📌 Llamar a la función al cargar
-solicitarPermiso();
