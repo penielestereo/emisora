@@ -22,13 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
       audio.pause();
       playPauseIcon.src = "assets/img/play.png";
       animacion.stop();
-      isPlaying = false;
     } else {
       audio.play();
       playPauseIcon.src = "assets/img/pause.png";
       animacion.play();
-      isPlaying = true;
     }
+    isPlaying = !isPlaying;
   });
 
   // Obtener metadatos de la canción
@@ -44,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const updateSongInfo = (data) => {
-    if (data && data.now_playing && data.now_playing.song) {
+    if (data?.now_playing?.song) {
       const { artist, title } = data.now_playing.song;
       artistaCancion.textContent = `${artist} - ${title}`;
     } else {
@@ -54,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Actualizar los metadatos cada 5 segundos
   fetchMetadata();
-  setInterval(fetchMetadata, 3000);
+  setInterval(fetchMetadata, 5000);
 
   // Controlar el menú desplegable
   const menuBtn = document.getElementById("menuBtn");
@@ -62,36 +61,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuIcon = document.getElementById("menuIcon");
 
   menuBtn.addEventListener("click", () => {
-    if (menuOptions.classList.contains("open")) {
-      menuOptions.classList.remove("open");
-      menuIcon.src = "assets/img/menu.png";
-    } else {
-      menuOptions.classList.add("open");
-      menuIcon.src = "assets/img/close.png";
-    }
+    menuOptions.classList.toggle("open");
+    menuIcon.src = menuOptions.classList.contains("open") ? "assets/img/close.png" : "assets/img/menu.png";
   });
 
   // Eventos de instalación de la PWA
   let deferredPrompt;
+  const installButton = document.getElementById('installButton');
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const installButton = document.getElementById('installButton');
-    if (installButton) {
-      installButton.style.display = 'block';
-    }
-    installButton.addEventListener('click', () => {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('El usuario aceptó la instalación');
-        } else {
-          console.log('El usuario rechazó la instalación');
-        }
-        deferredPrompt = null;
-        installButton.style.display = 'none';
-      });
+    installButton.style.display = 'block';
+  });
+
+  installButton?.addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      installButton.style.display = 'none';
     });
   });
 
@@ -111,22 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  // Solicitar permiso para notificaciones
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
-      getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" }).then((currentToken) => {
-        if (currentToken) {
-          console.log("Token de notificación:", currentToken);
-        } else {
-          console.log("No se obtuvo token de notificación.");
-        }
-      }).catch((err) => {
-        console.log("Error obteniendo el token:", err);
-      });
+      getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" })
+        .then((currentToken) => console.log("Token de notificación:", currentToken))
+        .catch((err) => console.log("Error obteniendo el token:", err));
     }
   });
 
-  // Escuchar notificaciones en primer plano
   onMessage(messaging, (payload) => {
     console.log("Mensaje recibido:", payload);
     new Notification(payload.notification.title, {
@@ -138,11 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Registrar Service Worker
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js")
-      .then((registration) => {
-        console.log("Service Worker registrado con éxito:", registration);
-      })
-      .catch((error) => {
-        console.error("Error al registrar el Service Worker:", error);
-      });
+      .then((registration) => console.log("Service Worker registrado con éxito:", registration))
+      .catch((error) => console.error("Error al registrar el Service Worker:", error));
   }
 });
