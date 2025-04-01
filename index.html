@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peniel Estéreo</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Imagen Central -->
+    <div class="central">
+      <img src="assets/img/central.png" alt="Imagen Central">
+    </div>
+    
+    <!-- Logo -->
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="Logo">
+    </div>
+
+    <!-- Información de la Canción -->
+    <div class="metadatos">
+      <span id="artistaCancion">Cargando metadatos...</span>
+    </div>
+
+    <!-- Animación de Sonido -->
+    <div class="animacion-container">
+      <div id="animacion"></div>
+    </div>
+
+    <!-- Reproductor de Audio -->
+    <div class="reproductor-container">
+      <button id="playPauseBtn" class="btn">
+        <img id="playPauseIcon" src="assets/img/play.png" alt="Play">
+      </button>
+    </div>
+
+    <!-- Botón Menú -->
+    <div class="menu-btn-container">
+      <button id="menuBtn" class="btn">
+        <img src="assets/img/menu.png" alt="Menú" id="menuIcon">
+      </button>
+      <div id="menuOptions" class="menu-options">
+        <a href="fb://profile/100064812003799" target="_blank">
+          <button class="btn"><img src="assets/img/facebook.png" alt="Facebook"></button>
+        </a>
+        <a href="https://www.instagram.com/ministerioalasnacionespeniel" target="_blank">
+          <button class="btn"><img src="assets/img/instagram.png" alt="Instagram"></button>
+        </a>
+        <a href="https://www.youtube.com" target="_blank">
+          <button class="btn"><img src="assets/img/youtube.png" alt="YouTube"></button>
+        </a>
+        <a href="https://wa.me/1234567890" target="_blank">
+          <button class="btn"><img src="assets/img/whatsapp.png" alt="WhatsApp"></button>
+        </a>
+      </div>
+    </div>
+
+    <!-- Botón de instalación de la PWA (invisible por defecto) -->
+    <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
+      Instalar Peniel Estéreo
+    </button>
+  </div>
+
+  <script src="assets/js/script.js" defer></script>
+  
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch((error) => console.error("Error al registrar el Service Worker:", error));
+    }
+
+    let deferredPrompt;
+
+    // Manejador para el evento beforeinstallprompt
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const installButton = document.getElementById('installButton');
+      
+      // Mostrar el botón de instalación
+      installButton.style.display = "block";
+
+      // Manejador del clic en el botón de instalación
+      installButton.addEventListener("click", () => {
+        installButton.style.display = "none";  // Ocultar el botón de instalación
+        deferredPrompt.prompt();  // Muestra la opción de instalación
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("PWA instalada");
+          } else {
+            console.log("PWA no instalada");
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
