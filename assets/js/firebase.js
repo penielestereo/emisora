@@ -36,7 +36,7 @@ const solicitarPermiso = async () => {
 
       // Obtener el token FCM
       const token = await getToken(messaging, {
-        vapidKey: "TU_CLAVE_VAPID", // 🔹 Reemplaza con tu VAPID Key
+        vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms", // 🔹 Reemplaza con tu VAPID Key
       });
 
       if (token) {
