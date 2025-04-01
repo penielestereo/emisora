@@ -39,7 +39,7 @@
         console.log("Permiso para notificaciones concedido");
 
         // Obtén el token para poder enviar notificaciones push
-        getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
+        getToken(messaging, { vapidKey: "BCaaEb74fKiOfinyzKM6rHJf5FkuyPftwLEqEgOJS6j-BoW_Aj57Ao8uuMo4ofWgtpxt_WZl9lSUSIFKUDmBYmE" }).then((currentToken) => {
           if (currentToken) {
             console.log("Token de suscripción:", currentToken);
             // Aquí puedes enviar el token a tu servidor
@@ -122,9 +122,9 @@
     // Registra el Service Worker para que funcione en segundo plano
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/service-worker.js")
-        .then(() => console.log("Service Worker registrado"))
-        .catch((error) => console.error("Error al registrar el Service Worker:", error));
+        .register("/firebase-messaging-sw.js") // Asegúrate de que el archivo `firebase-messaging-sw.js` exista en la raíz
+        .then(() => console.log("Firebase Service Worker registrado"))
+        .catch((error) => console.error("Error al registrar el Service Worker de Firebase:", error));
     }
 
     let deferredPrompt;
