@@ -1,9 +1,9 @@
 // Nombre del caché
-const CACHE_NAME = "peniel-cache-v3"; // Asegúrate de cambiar la versión si actualizas archivos
+const CACHE_NAME = "peniel-cache-v4"; // Cambia la versión si actualizas archivos
 
-// Archivos a cachear
+// Archivos a cachear (sin archivos externos ni favicon.ico)
 const urlsToCache = [
-  "/emisora/",
+  "/",
   "assets/css/style.css",
   "assets/js/script.js",
   "assets/img/logo.png",
@@ -23,11 +23,16 @@ self.addEventListener("install", (event) => {
   console.log("Service Worker: Instalando...");
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("Archivos cacheados correctamente");
-      return cache.addAll(urlsToCache).catch((error) => {
-        console.error("Error cacheando archivos:", error);
-      });
+    caches.open(CACHE_NAME).then(async (cache) => {
+      console.log("Intentando cachear archivos...");
+      for (const url of urlsToCache) {
+        try {
+          await cache.add(url);
+          console.log(`✅ Cacheado correctamente: ${url}`);
+        } catch (error) {
+          console.warn(`⚠️ No se pudo cachear: ${url}`, error);
+        }
+      }
     })
   );
 });
@@ -37,39 +42,69 @@ self.addEventListener("activate", (event) => {
   console.log("Service Worker: Activado");
   self.clients.claim();
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
             console.log("Service Worker: Eliminando caché antigua:", cache);
             return caches.delete(cache);
           }
         })
-      );
-    })
+      )
+    )
   );
 });
 
 // Intercepción de solicitudes de red
 self.addEventListener("fetch", (event) => {
-  console.log("Service Worker: Fetch", event.request.url);
+  const requestUrl = event.request.url;
 
-  // Ignorar peticiones de extensiones de Chrome
-  if (event.request.url.startsWith("chrome-extension://")) {
+  // Evitar errores con extensiones de Chrome
+  if (requestUrl.startsWith("chrome-extension://")) {
     return;
   }
 
+  console.log("Service Worker: Fetch", requestUrl);
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      return fetch(event.request)
-        .then((response) => {
-          // Solo cacheamos peticiones GET exitosas (status 200)
-          if (response && response.status === 200 && event.request.method === "GET") {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        })
-        .catch(() => caches.match(event.request)); // Usa la caché si falla la red
+    caches.match(event.request).then((cachedResponse) => {
+      return (
+        cachedResponse ||
+        fetch(event.request)
+          .then((response) => {
+            if (!response || response.status !== 200 || response.type !== "basic") {
+              return response;
+            }
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+            return response;
+          })
+          .catch(() => caches.match("/")) // Si la red falla, usa la página de inicio
+      );
     })
   );
+});
+
+// Integración de Firebase Cloud Messaging
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
+
+firebase.initializeApp({
+  apiKey: "AIzaSy...",
+  authDomain: "notificacionespeniel.firebaseapp.com",
+  projectId: "notificacionespeniel",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcd1234",
+});
+
+const messaging = firebase.messaging();
+
+// Manejo de notificaciones en segundo plano
+messaging.onBackgroundMessage((payload) => {
+  console.log("Mensaje en segundo plano:", payload);
+  self.registration.showNotification(payload.notification.title, {
+    body: payload.notification.body,
+    icon: "/assets/icons/icon.png",
+  });
 });
