@@ -53,39 +53,23 @@ self.addEventListener("activate", (event) => {
 // Intercepción de solicitudes de red
 self.addEventListener("fetch", (event) => {
   console.log("Service Worker: Fetch", event.request.url);
+
+  // Ignorar peticiones de extensiones de Chrome
+  if (event.request.url.startsWith("chrome-extension://")) {
+    return;
+  }
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, response.clone());
+    caches.open(CACHE_NAME).then((cache) => {
+      return fetch(event.request)
+        .then((response) => {
+          // Solo cacheamos peticiones GET exitosas (status 200)
+          if (response && response.status === 200 && event.request.method === "GET") {
+            cache.put(event.request, response.clone());
+          }
           return response;
-        });
-      })
-      .catch(() => caches.match(event.request)) // Si la red falla, usa la caché
+        })
+        .catch(() => caches.match(event.request)); // Usa la caché si falla la red
+    })
   );
-});
-
-// Integración de Firebase Cloud Messaging
-importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
-
-firebase.initializeApp({
-    apiKey: "AIzaSy...",
-    authDomain: "notificacionespeniel.firebaseapp.com",
-    projectId: "notificacionespeniel",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcd1234"
-});
-
-const messaging = firebase.messaging();
-
-
-
-// Manejo de notificaciones en segundo plano
-messaging.onBackgroundMessage((payload) => {
-  console.log("Mensaje en segundo plano:", payload);
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: "/assets/icons/icon.png",
-  });
 });
