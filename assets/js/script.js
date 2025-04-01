@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-  
+
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
     container: animacionContainer,
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Actualizar los metadatos cada 5 segundos
+  // Actualizar los metadatos cada 3 segundos
   fetchMetadata();
-  setInterval(fetchMetadata, 5000);
+  setInterval(fetchMetadata, 3000);
 
   // Controlar el menú desplegable
   const menuBtn = document.getElementById("menuBtn");
@@ -72,47 +72,19 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    installButton.style.display = 'block';
+    if (installButton) installButton.style.display = 'block';
   });
 
-  installButton?.addEventListener('click', () => {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      installButton.style.display = 'none';
+  if (installButton) {
+    installButton.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          installButton.style.display = 'none';
+        });
+      }
     });
-  });
-
-  // Integración con Firebase Cloud Messaging (FCM)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
-    authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
-    projectId: "notificacionespeniel-29ab3",
-    storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
-    messagingSenderId: "145535352146",
-    appId: "1:145535352146:web:5d08044df2a0c2e1594e8b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const messaging = getMessaging(app);
-
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" })
-        .then((currentToken) => console.log("Token de notificación:", currentToken))
-        .catch((err) => console.log("Error obteniendo el token:", err));
-    }
-  });
-
-  onMessage(messaging, (payload) => {
-    console.log("Mensaje recibido:", payload);
-    new Notification(payload.notification.title, {
-      body: payload.notification.body,
-      icon: "/assets/icons/icon.png"
-    });
-  });
+  }
 
   // Registrar Service Worker
   if ("serviceWorker" in navigator) {
@@ -121,3 +93,5 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((error) => console.error("Error al registrar el Service Worker:", error));
   }
 });
+
+// Firebase se debe manejar en un archivo separado o en un script con type="module"
