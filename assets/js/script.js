@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-
+  
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
     container: animacionContainer,
@@ -22,12 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
       audio.pause();
       playPauseIcon.src = "assets/img/play.png";
       animacion.stop();
+      isPlaying = false;
     } else {
       audio.play();
       playPauseIcon.src = "assets/img/pause.png";
       animacion.play();
+      isPlaying = true;
     }
-    isPlaying = !isPlaying;
   });
 
   // Obtener metadatos de la canción
@@ -43,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const updateSongInfo = (data) => {
-    if (data?.now_playing?.song) {
+    if (data && data.now_playing && data.now_playing.song) {
       const { artist, title } = data.now_playing.song;
       artistaCancion.textContent = `${artist} - ${title}`;
     } else {
@@ -51,9 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Actualizar los metadatos cada 3 segundos
+  // Actualizar los metadatos cada 15 segundos
   fetchMetadata();
-  setInterval(fetchMetadata, 3000);
+  setInterval(fetchMetadata, 5000);
 
   // Controlar el menú desplegable
   const menuBtn = document.getElementById("menuBtn");
@@ -61,37 +62,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuIcon = document.getElementById("menuIcon");
 
   menuBtn.addEventListener("click", () => {
-    menuOptions.classList.toggle("open");
-    menuIcon.src = menuOptions.classList.contains("open") ? "assets/img/close.png" : "assets/img/menu.png";
+    if (menuOptions.classList.contains("open")) {
+      menuOptions.classList.remove("open");
+      menuIcon.src = "assets/img/menu.png"; // Cambiar a ícono de menú
+    } else {
+      menuOptions.classList.add("open");
+      menuIcon.src = "assets/img/close.png"; // Cambiar a ícono de cerrar
+    }
   });
 
   // Eventos de instalación de la PWA
   let deferredPrompt;
-  const installButton = document.getElementById('installButton');
 
+  // Detecta cuando el navegador ofrece la opción de instalación
   window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevenir la instalación automática
     e.preventDefault();
     deferredPrompt = e;
-    if (installButton) installButton.style.display = 'block';
-  });
 
-  if (installButton) {
+    // Mostrar el botón de instalación
+    const installButton = document.getElementById('installButton');
+    if (installButton) {
+      installButton.style.display = 'block'; // Mostrar el botón de instalación
+    }
+
+    // Manejador del clic en el botón de instalación
     installButton.addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          installButton.style.display = 'none';
-        });
-      }
+      // Mostrar la opción de instalación
+      deferredPrompt.prompt();
+
+      // Espera la respuesta del usuario
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('El usuario aceptó la instalación');
+        } else {
+          console.log('El usuario rechazó la instalación');
+        }
+        deferredPrompt = null;
+        installButton.style.display = 'none'; // Ocultar el botón después de la acción
+      });
     });
-  }
-
-  // Registrar Service Worker
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js")
-      .then((registration) => console.log("Service Worker registrado con éxito:", registration))
-      .catch((error) => console.error("Error al registrar el Service Worker:", error));
-  }
+  });
 });
-
-// Firebase se debe manejar en un archivo separado o en un script con type="module"
