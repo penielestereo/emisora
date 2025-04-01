@@ -91,11 +91,12 @@ importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSy...",
-  authDomain: "notificacionespeniel.firebaseapp.com",
-  projectId: "notificacionespeniel",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcd1234",
+   apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  
+  authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
+  projectId: "notificacionespeniel-29ab3",
+  storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
+  messagingSenderId: "145535352146", 
+  appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
 });
 
 const messaging = firebase.messaging();
