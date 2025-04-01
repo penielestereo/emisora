@@ -4,11 +4,12 @@ import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/fireb
 
 // 🔥 Configuración de Firebase (Reemplaza con tus datos)
 const firebaseConfig = {
-  apiKey: "AIzaSy...",  // 🔹 Reemplaza con tu API Key
-  authDomain: "notificacionespeniel.firebaseapp.com",
-  projectId: "notificacionespeniel",
-  messagingSenderId: "123456789", // 🔹 Tu Sender ID
-  appId: "1:123456789:web:abcd1234",
+  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  // 🔹 Reemplaza con tu API Key
+  authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
+  projectId: "notificacionespeniel-29ab3",
+  storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
+  messagingSenderId: "145535352146", // 🔹 Tu Sender ID
+  appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
 };
 
 // Inicializar Firebase
