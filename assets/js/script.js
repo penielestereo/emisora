@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Actualizar los metadatos cada 5 segundos
   fetchMetadata();
-  setInterval(fetchMetadata, 5000);
+  setInterval(fetchMetadata, 3000);
 
   // Controlar el menú desplegable
   const menuBtn = document.getElementById("menuBtn");
@@ -64,10 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
   menuBtn.addEventListener("click", () => {
     if (menuOptions.classList.contains("open")) {
       menuOptions.classList.remove("open");
-      menuIcon.src = "assets/img/menu.png"; // Cambiar a ícono de menú
+      menuIcon.src = "assets/img/menu.png";
     } else {
       menuOptions.classList.add("open");
-      menuIcon.src = "assets/img/close.png"; // Cambiar a ícono de cerrar
+      menuIcon.src = "assets/img/close.png";
     }
   });
 
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Solicitar permiso para notificaciones
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
-      getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
+      getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" }).then((currentToken) => {
         if (currentToken) {
           console.log("Token de notificación:", currentToken);
         } else {
@@ -134,4 +134,15 @@ document.addEventListener("DOMContentLoaded", () => {
       icon: "/assets/icons/icon.png"
     });
   });
+
+  // Registrar Service Worker
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then((registration) => {
+        console.log("Service Worker registrado con éxito:", registration);
+      })
+      .catch((error) => {
+        console.error("Error al registrar el Service Worker:", error);
+      });
+  }
 });
