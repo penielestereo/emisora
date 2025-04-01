@@ -66,20 +66,19 @@ self.addEventListener("fetch", (event) => {
 });
 
 // Integración de Firebase Cloud Messaging
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import { getMessaging } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js';
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
-    authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
-    projectId: "notificacionespeniel-29ab3",
-    storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
-    messagingSenderId: "145535352146",
-    appId: "1:145535352146:web:5d08044df2a0c2e1594e8b"
-};
+firebase.initializeApp({
+    apiKey: "AIzaSy...",
+    authDomain: "notificacionespeniel.firebaseapp.com",
+    projectId: "notificacionespeniel",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcd1234"
+});
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+const messaging = firebase.messaging();
+
 
 
 // Manejo de notificaciones en segundo plano
