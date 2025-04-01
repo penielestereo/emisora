@@ -104,3 +104,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+import { requestNotificationPermission } from "./firebase.js";
+
+// Botón de notificaciones
+const notifButton = document.getElementById("notifButton");
+notifButton?.addEventListener("click", requestNotificationPermission);
