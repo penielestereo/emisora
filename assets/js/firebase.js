@@ -1,12 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging.js";
 
-// 🔥 Configuración de Firebase (Reemplaza con tus datos)
+// 🔥 Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
   authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
   projectId: "notificacionespeniel-29ab3",
-  storageBucket: "notificacionespeniel-29ab3.appspot.com", // 🔹 Corregido
+  storageBucket: "notificacionespeniel-29ab3.appspot.com",
   messagingSenderId: "145535352146",
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
 };
@@ -40,7 +40,8 @@ const obtenerTokenFCM = async () => {
 
       if (token) {
         console.log("📌 Token obtenido:", token);
-        suscribirATema(token, "global");
+        // Enviar el token al servidor para suscripción
+        enviarTokenAlBackend(token);
       } else {
         console.warn("⚠️ No se obtuvo token.");
       }
@@ -52,24 +53,24 @@ const obtenerTokenFCM = async () => {
   }
 };
 
-// 📩 Suscribirse a un tema en Firebase
-const suscribirATema = async (token, tema) => {
+// 📩 Enviar el token al servidor
+const enviarTokenAlBackend = async (token) => {
   try {
-    const response = await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/${tema}`, {
-      method: "POST",
+    const response = await fetch('/suscribir', {  // Asegúrate de que esta URL sea la correcta para tu servidor
+      method: 'POST',
       headers: {
-        Authorization: `Bearer TU_ACCESS_TOKEN`,
-        "Content-Type": "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token: token })
     });
 
     if (response.ok) {
-      console.log(`✅ Suscrito al tema: ${tema}`);
+      console.log("✅ Token enviado al backend.");
     } else {
-      console.warn("⚠️ No se pudo suscribir al tema.");
+      console.warn("⚠️ Error al enviar el token al backend.");
     }
   } catch (error) {
-    console.error("❌ Error en la suscripción:", error);
+    console.error("❌ Error en la solicitud al servidor:", error);
   }
 };
 
