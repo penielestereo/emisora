@@ -116,7 +116,7 @@
     document.getElementById("notifButton").addEventListener("click", () => {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
-          getToken(messaging, { vapidKey: "AQUI_TU_CLAVE_PUBLICA_VAPID" })
+          getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" })
             .then((currentToken) => {
               if (currentToken) {
                 console.log("Token de notificación:", currentToken);
