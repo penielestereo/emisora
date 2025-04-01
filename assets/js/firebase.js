@@ -1,14 +1,13 @@
-// Importar e inicializar Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging.js";
 
 // 🔥 Configuración de Firebase (Reemplaza con tus datos)
 const firebaseConfig = {
-  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  // 🔹 Reemplaza con tu API Key
+  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  // 
   authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
   projectId: "notificacionespeniel-29ab3",
   storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
-  messagingSenderId: "145535352146", // 🔹 Tu Sender ID
+  messagingSenderId: "145535352146", 
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
 };
 
@@ -16,7 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// 🚀 Registrar el Service Worker de Firebase Messaging
+// ✅ Registrar el Service Worker antes de obtener el token
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
