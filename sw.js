@@ -87,8 +87,8 @@ self.addEventListener("fetch", (event) => {
 });
 
 // Integración de Firebase Cloud Messaging
-importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging-compat.js");
 
 firebase.initializeApp({
   apiKey: "AIzaSy...",
