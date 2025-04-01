@@ -21,11 +21,7 @@ const urlsToCache = [
 // Instalación del Service Worker
 self.addEventListener("install", (event) => {
   console.log("Service Worker: Instalando...");
-
-  // Hacer que el nuevo SW se active de inmediato
   self.skipWaiting();
-
-  // Esperar a que se cacheen los archivos necesarios
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Archivos cacheados correctamente");
@@ -39,11 +35,7 @@ self.addEventListener("install", (event) => {
 // Activación del Service Worker
 self.addEventListener("activate", (event) => {
   console.log("Service Worker: Activado");
-
-  // Tomar el control inmediato de la página
   self.clients.claim();
-
-  // Eliminar cachés antiguas si el nombre del caché ha cambiado
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -61,7 +53,6 @@ self.addEventListener("activate", (event) => {
 // Intercepción de solicitudes de red
 self.addEventListener("fetch", (event) => {
   console.log("Service Worker: Fetch", event.request.url);
-
   event.respondWith(
     fetch(event.request)
       .then((response) => {
@@ -74,4 +65,27 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
+// Integración de Firebase Cloud Messaging
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
+  authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
+  projectId: "notificacionespeniel-29ab3",
+  storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
+  messagingSenderId: "145535352146",
+  appId: "1:145535352146:web:5d08044df2a0c2e1594e8b"
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// Manejo de notificaciones en segundo plano
+messaging.onBackgroundMessage((payload) => {
+  console.log("Mensaje en segundo plano:", payload);
+  self.registration.showNotification(payload.notification.title, {
+    body: payload.notification.body,
+    icon: "/assets/icons/icon.png",
+  });
+});
