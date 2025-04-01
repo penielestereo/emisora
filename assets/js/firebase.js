@@ -56,7 +56,7 @@ const obtenerTokenFCM = async () => {
 // 📩 Enviar el token al servidor
 const enviarTokenAlBackend = async (token) => {
   try {
-    const response = await fetch('http://localhost:3000/suscribir', {  // Asegúrate de que esta URL sea la correcta para tu servidor
+    const response = await fetch('https://167.86.114.193:3000/suscribir', {  // Asegúrate de que esta URL sea la correcta para tu servidor
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
