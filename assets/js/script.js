@@ -64,34 +64,26 @@ document.addEventListener("DOMContentLoaded", () => {
   menuBtn.addEventListener("click", () => {
     if (menuOptions.classList.contains("open")) {
       menuOptions.classList.remove("open");
-      menuIcon.src = "assets/img/menu.png"; // Cambiar a ícono de menú
+      menuIcon.src = "assets/img/menu.png";
     } else {
       menuOptions.classList.add("open");
-      menuIcon.src = "assets/img/close.png"; // Cambiar a ícono de cerrar
+      menuIcon.src = "assets/img/close.png";
     }
   });
 
   // Eventos de instalación de la PWA
   let deferredPrompt;
 
-  // Detecta cuando el navegador ofrece la opción de instalación
   window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevenir la instalación automática
     e.preventDefault();
     deferredPrompt = e;
-
-    // Mostrar el botón de instalación
     const installButton = document.getElementById('installButton');
     if (installButton) {
-      installButton.style.display = 'block'; // Mostrar el botón de instalación
+      installButton.style.display = 'block';
     }
 
-    // Manejador del clic en el botón de instalación
     installButton.addEventListener('click', () => {
-      // Mostrar la opción de instalación
       deferredPrompt.prompt();
-
-      // Espera la respuesta del usuario
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('El usuario aceptó la instalación');
@@ -99,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log('El usuario rechazó la instalación');
         }
         deferredPrompt = null;
-        installButton.style.display = 'none'; // Ocultar el botón después de la acción
+        installButton.style.display = 'none';
       });
     });
   });
@@ -115,45 +107,43 @@ document.addEventListener("DOMContentLoaded", () => {
     measurementId: "G-L8Q4FJNGM7"
   };
 
-  // Importa los módulos necesarios de Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
   import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
 
-  // Inicializa la app de Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-
-  // Inicializa el servicio de mensajería de Firebase
   const messaging = getMessaging(app);
 
-  // Solicitar permiso para notificaciones
-  Notification.requestPermission().then(permission => {
-    if (permission === "granted") {
-      console.log("Permiso para notificaciones concedido");
-
-      // Obtén el token FCM
-      getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
-        if (currentToken) {
-          console.log("Token FCM:", currentToken);
-          // Aquí puedes enviar el token a tu servidor para guardarlo y usarlo para enviar notificaciones
-        } else {
-          console.log("No se pudo obtener el token FCM");
-        }
-      }).catch((err) => {
-        console.log("Error al obtener el token FCM:", err);
-      });
-    } else {
-      console.log("Permiso para notificaciones no concedido");
-    }
-  }).catch(err => {
-    console.log("Error al solicitar permiso para notificaciones", err);
+  document.getElementById("activarNotificaciones").addEventListener("click", () => {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        console.log("Permiso concedido");
+        getToken(messaging, { vapidKey: "TU_VAPID_KEY" })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("Token FCM:", currentToken);
+              fetch('https://tu-servidor.com/api/registrar-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: currentToken })
+              });
+            } else {
+              console.log("No se pudo obtener el token FCM");
+            }
+          })
+          .catch((err) => {
+            console.log("Error al obtener el token FCM:", err);
+          });
+      } else {
+        console.log("Permiso para notificaciones no concedido");
+      }
+    }).catch(err => {
+      console.log("Error al solicitar permiso para notificaciones", err);
+    });
   });
 
-  // Escuchar mensajes cuando la app está en primer plano
   onMessage(messaging, (payload) => {
     console.log("Mensaje recibido en primer plano:", payload);
-    // Aquí puedes manejar la notificación cuando la aplicación esté abierta
   });
 });
-
