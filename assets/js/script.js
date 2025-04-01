@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-  
+
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
     container: animacionContainer,
@@ -103,4 +103,57 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
+
+  // Firebase: Inicializar la configuración
+  const firebaseConfig = {
+    apiKey: "AIzaSyC2KTmkA-1znWUJxAociE0SygIsI-ZeeXg",
+    authDomain: "notificacionespeniel.firebaseapp.com",
+    projectId: "notificacionespeniel",
+    storageBucket: "notificacionespeniel.firebasestorage.app",
+    messagingSenderId: "634476182377",
+    appId: "1:634476182377:web:ef93780f0cfbf866451bf8",
+    measurementId: "G-L8Q4FJNGM7"
+  };
+
+  // Importa los módulos necesarios de Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
+
+  // Inicializa la app de Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  // Inicializa el servicio de mensajería de Firebase
+  const messaging = getMessaging(app);
+
+  // Solicitar permiso para notificaciones
+  Notification.requestPermission().then(permission => {
+    if (permission === "granted") {
+      console.log("Permiso para notificaciones concedido");
+
+      // Obtén el token FCM
+      getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
+        if (currentToken) {
+          console.log("Token FCM:", currentToken);
+          // Aquí puedes enviar el token a tu servidor para guardarlo y usarlo para enviar notificaciones
+        } else {
+          console.log("No se pudo obtener el token FCM");
+        }
+      }).catch((err) => {
+        console.log("Error al obtener el token FCM:", err);
+      });
+    } else {
+      console.log("Permiso para notificaciones no concedido");
+    }
+  }).catch(err => {
+    console.log("Error al solicitar permiso para notificaciones", err);
+  });
+
+  // Escuchar mensajes cuando la app está en primer plano
+  onMessage(messaging, (payload) => {
+    console.log("Mensaje recibido en primer plano:", payload);
+    // Aquí puedes manejar la notificación cuando la aplicación esté abierta
+  });
 });
+
