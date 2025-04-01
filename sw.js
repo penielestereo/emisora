@@ -1,5 +1,5 @@
 // Nombre del caché
-const CACHE_NAME = "peniel-cache-v3"; // Asegúrate de cambiar la versión si actualizas archivos
+const CACHE_NAME = "peniel-cache-v4"; // Asegúrate de cambiar la versión si actualizas archivos
 
 // Archivos a cachear
 const urlsToCache = [
@@ -21,11 +21,7 @@ const urlsToCache = [
 // Instalación del Service Worker
 self.addEventListener("install", (event) => {
   console.log("Service Worker: Instalando...");
-
-  // Hacer que el nuevo SW se active de inmediato
   self.skipWaiting();
-
-  // Esperar a que se cacheen los archivos necesarios
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Archivos cacheados correctamente");
@@ -39,11 +35,7 @@ self.addEventListener("install", (event) => {
 // Activación del Service Worker
 self.addEventListener("activate", (event) => {
   console.log("Service Worker: Activado");
-
-  // Tomar el control inmediato de la página
   self.clients.claim();
-
-  // Eliminar cachés antiguas si el nombre del caché ha cambiado
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -61,26 +53,22 @@ self.addEventListener("activate", (event) => {
 // Intercepción de solicitudes de red
 self.addEventListener("fetch", (event) => {
   console.log("Service Worker: Fetch", event.request.url);
-
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
+    caches.match(event.request).then((cachedResponse) => {
+      return cachedResponse || fetch(event.request).then((response) => {
         return caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, response.clone());
           return response;
         });
-      })
-      .catch(() => caches.match(event.request)) // Si la red falla, usa la caché
+      });
+    })
   );
 });
 
 // Agregar Firebase Messaging para manejar las notificaciones push
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js");
 
-// Importa Firebase y los módulos necesarios para manejar las notificaciones
-importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js');
-
-// Configura Firebase con tus credenciales
 firebase.initializeApp({
   apiKey: "AIzaSyC2KTmkA-1znWUJxAociE0SygIsI-ZeeXg",
   authDomain: "notificacionespeniel.firebaseapp.com",
@@ -88,23 +76,32 @@ firebase.initializeApp({
   storageBucket: "notificacionespeniel.firebasestorage.app",
   messagingSenderId: "634476182377",
   appId: "1:634476182377:web:ef93780f0cfbf866451bf8",
-  measurementId: "G-L8Q4FJNGM7"
+  measurementId: "G-L8Q4FJNGM7",
 });
 
-// Inicializa Firebase Messaging
 const messaging = firebase.messaging();
 
 // Maneja las notificaciones cuando la aplicación está en segundo plano
-messaging.onBackgroundMessage(function(payload) {
-  console.log('Mensaje recibido en segundo plano', payload);
-
+messaging.onBackgroundMessage((payload) => {
+  console.log("Mensaje recibido en segundo plano", payload);
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: payload.notification.icon || 'assets/img/logo.png', // Puedes cambiar el icono si lo deseas
+    icon: payload.notification.icon || "assets/img/logo.png",
   };
-
-  // Muestra la notificación
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Manejar evento 'push' para mensajes sin payload
+self.addEventListener("push", (event) => {
+  if (event.data) {
+    const payload = event.data.json();
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+      icon: payload.notification.icon || "assets/img/logo.png",
+    };
+    event.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
+  }
 });
 
