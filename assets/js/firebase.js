@@ -15,67 +15,66 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// ✅ Registrar el Service Worker antes de obtener el token
+// ✅ Registrar el Service Worker
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
-      console.log("✅ Service Worker registrado correctamente:", registration);
-      obtenerTokenFCM(registration);
+      console.log("✅ Service Worker registrado:", registration);
     })
     .catch((error) => {
-      console.error("❌ Error registrando Service Worker:", error);
+      console.error("❌ Error registrando el Service Worker:", error);
     });
 }
 
-// 🚀 Función para solicitar permiso y obtener el token
-const obtenerTokenFCM = async (registration) => {
+// 🚀 Solicitar permiso y obtener Token
+const obtenerTokenFCM = async () => {
   try {
     const permiso = await Notification.requestPermission();
-    if (permiso !== "granted") {
-      console.warn("⚠️ Permiso de notificación denegado.");
-      return;
-    }
+    if (permiso === "granted") {
+      console.log("✅ Permiso concedido");
 
-    console.log("✅ Permiso de notificación concedido");
+      const token = await getToken(messaging, {
+        vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms"
+      });
 
-    // Obtener el token FCM
-    const token = await getToken(messaging, {
-      vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms",
-      serviceWorkerRegistration: registration, // 🔹 Asignamos el SW
-    });
-
-    if (token) {
-      console.log("📌 Token FCM obtenido:", token);
-      suscribirATema(token);
+      if (token) {
+        console.log("📌 Token obtenido:", token);
+        suscribirATema(token, "global");
+      } else {
+        console.warn("⚠️ No se obtuvo token.");
+      }
     } else {
-      console.warn("⚠️ No se pudo obtener un token de notificación.");
+      console.warn("⚠️ Permiso de notificación denegado.");
     }
   } catch (error) {
     console.error("❌ Error obteniendo el token:", error);
   }
 };
 
-// 🔹 Suscribir automáticamente al usuario al tema "global"
-const suscribirATema = async (token) => {
+// 📩 Suscribirse a un tema en Firebase
+const suscribirATema = async (token, tema) => {
   try {
-    const respuesta = await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/global`, {
+    const response = await fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/${tema}`, {
       method: "POST",
       headers: {
-        "Authorization": "key=TU_SERVER_KEY",
-        "Content-Type": "application/json",
-      },
+        Authorization: `Bearer TU_ACCESS_TOKEN`,
+        "Content-Type": "application/json"
+      }
     });
 
-    if (respuesta.ok) {
-      console.log("✅ Suscrito automáticamente al tema 'global'");
+    if (response.ok) {
+      console.log(`✅ Suscrito al tema: ${tema}`);
     } else {
       console.warn("⚠️ No se pudo suscribir al tema.");
     }
   } catch (error) {
-    console.error("❌ Error al suscribir al tema:", error);
+    console.error("❌ Error en la suscripción:", error);
   }
 };
+
+// 📌 Llamar a la función
+obtenerTokenFCM();
 
 // 📩 Manejar notificaciones en primer plano
 onMessage(messaging, (payload) => {
@@ -84,6 +83,6 @@ onMessage(messaging, (payload) => {
 
   new Notification(title, {
     body,
-    icon: "/assets/icons/icon.png",
+    icon: "/assets/icons/icon.png"
   });
 });
