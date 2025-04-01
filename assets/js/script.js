@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Actualizar los metadatos cada 15 segundos
+  // Actualizar los metadatos cada 5 segundos
   fetchMetadata();
   setInterval(fetchMetadata, 5000);
 
@@ -74,24 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Eventos de instalación de la PWA
   let deferredPrompt;
 
-  // Detecta cuando el navegador ofrece la opción de instalación
   window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevenir la instalación automática
     e.preventDefault();
     deferredPrompt = e;
-
-    // Mostrar el botón de instalación
     const installButton = document.getElementById('installButton');
     if (installButton) {
-      installButton.style.display = 'block'; // Mostrar el botón de instalación
+      installButton.style.display = 'block';
     }
-
-    // Manejador del clic en el botón de instalación
     installButton.addEventListener('click', () => {
-      // Mostrar la opción de instalación
       deferredPrompt.prompt();
-
-      // Espera la respuesta del usuario
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('El usuario aceptó la instalación');
@@ -99,8 +90,48 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log('El usuario rechazó la instalación');
         }
         deferredPrompt = null;
-        installButton.style.display = 'none'; // Ocultar el botón después de la acción
+        installButton.style.display = 'none';
       });
+    });
+  });
+
+  // Integración con Firebase Cloud Messaging (FCM)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",
+    authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
+    projectId: "notificacionespeniel-29ab3",
+    storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
+    messagingSenderId: "145535352146",
+    appId: "1:145535352146:web:5d08044df2a0c2e1594e8b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+
+  // Solicitar permiso para notificaciones
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      getToken(messaging, { vapidKey: "TU_VAPID_KEY" }).then((currentToken) => {
+        if (currentToken) {
+          console.log("Token de notificación:", currentToken);
+        } else {
+          console.log("No se obtuvo token de notificación.");
+        }
+      }).catch((err) => {
+        console.log("Error obteniendo el token:", err);
+      });
+    }
+  });
+
+  // Escuchar notificaciones en primer plano
+  onMessage(messaging, (payload) => {
+    console.log("Mensaje recibido:", payload);
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+      icon: "/assets/icons/icon.png"
     });
   });
 });
