@@ -1,13 +1,11 @@
 
-// Espera que el contenido de la página esté cargado
 document.addEventListener("DOMContentLoaded", () => {
-  // Inicializar el audio y los elementos de la UI
   const audio = new Audio("https://penielestereo.top:8000/radio.mp3");
   const playPauseBtn = document.getElementById("playPauseBtn");
   const playPauseIcon = document.getElementById("playPauseIcon");
   const artistaCancion = document.getElementById("artistaCancion");
   const animacionContainer = document.getElementById("animacion");
-
+  
   // Inicializar animación con Lottie
   const animacion = lottie.loadAnimation({
     container: animacionContainer,
@@ -49,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateSongInfo = (data) => {
     if (data && data.now_playing && data.now_playing.song) {
       const { artist, title } = data.now_playing.song;
-      artistaCancion.textContent = `${artist} - ${title}`;
+      artistaCancion.textContent = ${artist} - ${title};
     } else {
       artistaCancion.textContent = "Sin información disponible.";
     }
@@ -106,29 +104,4 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
-
-  // **Configuración de Firebase** - Agregar la autenticación anónima
-
-  // Función para la autenticación anónima
-  const signInAnonymouslyFn = async () => {
-    try {
-      const userCredential = await signInAnonymously(auth);
-      const user = userCredential.user;
-      console.log("Usuario autenticado de forma anónima:", user);
-    } catch (error) {
-      console.error("Error al autenticar al usuario de forma anónima", error);
-    }
-  };
-
-  // Llamamos a la función de autenticación anónima cuando cargue la app
-  signInAnonymouslyFn();
-
-  // Escuchar el estado de autenticación del usuario
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Usuario autenticado:", user);
-    } else {
-      console.log("No hay usuario autenticado.");
-    }
-  });
-});
+})
