@@ -1,4 +1,3 @@
-import { auth, signInAnonymously, onAuthStateChanged } from './firebase.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const audio = new Audio("https://penielestereo.top:8000/radio.mp3");
