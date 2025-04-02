@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const audio = new Audio("https://penielestereo.top:8000/radio.mp3");
   const playPauseBtn = document.getElementById("playPauseBtn");
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateSongInfo = (data) => {
     if (data && data.now_playing && data.now_playing.song) {
       const { artist, title } = data.now_playing.song;
-      artistaCancion.textContent = ${artist} - ${title};
+      artistaCancion.textContent = `${artist} - ${title}`;
     } else {
       artistaCancion.textContent = "Sin información disponible.";
     }
@@ -104,4 +103,4 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
-})
+});
