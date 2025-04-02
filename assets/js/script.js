@@ -1,5 +1,3 @@
-// script.js
-import { auth, signInAnonymously, onAuthStateChanged } from './firebase.js';
 
 // Espera que el contenido de la página esté cargado
 document.addEventListener("DOMContentLoaded", () => {
