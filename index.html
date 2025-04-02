@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js"></script>
 </head>
 <body>
   <div class="container">
@@ -64,15 +62,14 @@
     <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
       Instalar Peniel Estéreo
     </button>
-    
-    <!-- Botón para activar Notificaciones -->
-   
 
+  </div>
+
+  <!-- Cargar los módulos de Firebase -->
+  <!-- Ahora Firebase ya no es importado aquí, sino en el archivo `firebase.js` -->
   <script type="module" src="assets/js/firebase.js"></script>
-<script type="module" src="assets/js/script.js"></script>
+  <script type="module" src="assets/js/script.js"></script>
 
-
-  
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js")
@@ -100,49 +97,5 @@
       });
     });
   </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  // 🔹 Reemplaza con tu API Key
-  authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
-  projectId: "notificacionespeniel-29ab3",
-  storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
-  messagingSenderId: "145535352146", // 🔹 Tu Sender ID
-  appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    document.getElementById("notifButton").addEventListener("click", () => {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          getToken(messaging, { vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms" })
-            .then((currentToken) => {
-              if (currentToken) {
-                console.log("Token de notificación:", currentToken);
-              } else {
-                console.log("No se obtuvo token de notificación.");
-              }
-            })
-            .catch((err) => {
-              console.log("Error obteniendo el token:", err);
-            });
-        }
-      });
-    });
-
-    onMessage(messaging, (payload) => {
-      console.log("Mensaje recibido:", payload);
-      new Notification(payload.notification.title, {
-        body: payload.notification.body,
-        icon: "/assets/icons/icon.png"
-      });
-    });
-  </script>
-
 </body>
 </html>
