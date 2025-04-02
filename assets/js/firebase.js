@@ -12,7 +12,7 @@ const firebaseConfig = {
   storageBucket: "notificacionespeniel-29ab3.appspot.com",
   messagingSenderId: "145535352146",
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
-  measurementId: "G-VQ81GWZY1R" // ✅ Asegurar que Google Analytics funcione
+  measurementId: "G-VQ81GWZY1R"
 };
 
 // 🔹 Inicializar Firebase
@@ -21,6 +21,16 @@ const messaging = getMessaging(app);
 const analytics = getAnalytics(app);
 const performance = getPerformance(app);
 const inAppMessaging = getInAppMessaging(app);
+
+// 📊 Función para registrar eventos en Google Analytics
+const registrarEventoGA = (evento, datos = {}) => {
+  if (analytics) {
+    logEvent(analytics, evento, datos);
+    console.log(`📊 Evento registrado en GA: ${evento}`, datos);
+  } else {
+    console.warn("⚠️ Google Analytics no está inicializado.");
+  }
+};
 
 // ✅ Registrar el Service Worker
 if ("serviceWorker" in navigator) {
@@ -67,6 +77,7 @@ const enviarTokenAlBackend = async (token) => {
     });
     if (response.ok) {
       console.log("✅ Token enviado al backend correctamente.");
+      registrarEventoGA("token_enviado", { token });
     } else {
       console.warn("⚠️ Error al enviar el token al backend.");
     }
@@ -84,10 +95,10 @@ onMessage(messaging, (payload) => {
   const { title, body } = payload.notification;
   if (Notification.permission === "granted") {
     new Notification(title, { body, icon: "/assets/icons/icon.png" });
+    registrarEventoGA("notification_received", { title, body });
   } else {
     console.warn("⚠️ Notificación recibida, pero los permisos están bloqueados.");
   }
-  logEvent(analytics, "notification_received", { title, body }); // 📊 Registrar evento en Google Analytics
 });
 
 // 🚀 **Configurar In-App Messaging**
@@ -96,14 +107,15 @@ inAppMessaging.isAutomaticDataCollectionEnabled = true;
 // 🔥 Escuchar los mensajes dentro de la aplicación
 onMessageReceived(inAppMessaging, (message) => {
   console.log("📩 In-App Message recibido:", message);
-  logEvent(analytics, "in_app_message_received", { message }); // 📊 Registrar evento en Google Analytics
+  registrarEventoGA("in_app_message_received", { message });
 });
 
 // 🚀 Activar un evento manual para mostrar un mensaje dentro de la app
 const mostrarMensajeInApp = () => {
   triggerEvent(inAppMessaging, "mensaje_interactivo");
-  logEvent(analytics, "in_app_message_triggered"); // 📊 Registrar evento en Google Analytics
+  registrarEventoGA("in_app_message_triggered");
 };
 
 // **Exportar Firebase y servicios**
-export { app, messaging, inAppMessaging, mostrarMensajeInApp };
+export { app, messaging, inAppMessaging, mostrarMensajeInApp, registrarEventoGA };
+
