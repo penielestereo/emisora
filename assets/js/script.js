@@ -1,3 +1,6 @@
+// script.js
+import { auth, signInAnonymously, onAuthStateChanged } from './firebase.js';
+
 // Espera que el contenido de la página esté cargado
 document.addEventListener("DOMContentLoaded", () => {
   // Inicializar el audio y los elementos de la UI
@@ -108,13 +111,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // **Configuración de Firebase** - Agregar la autenticación anónima
 
-  // Importar Firebase Auth (si no lo has hecho aún)
-  import { auth } from './firebase.js'; // Asegúrate de que 'firebase.js' tenga la configuración de Firebase
-
   // Función para la autenticación anónima
-  const signInAnonymously = async () => {
+  const signInAnonymouslyFn = async () => {
     try {
-      const userCredential = await auth.signInAnonymously();
+      const userCredential = await signInAnonymously(auth);
       const user = userCredential.user;
       console.log("Usuario autenticado de forma anónima:", user);
     } catch (error) {
@@ -123,10 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Llamamos a la función de autenticación anónima cuando cargue la app
-  signInAnonymously();
+  signInAnonymouslyFn();
 
   // Escuchar el estado de autenticación del usuario
-  auth.onAuthStateChanged((user) => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Usuario autenticado:", user);
     } else {
@@ -134,4 +134,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
