@@ -10,14 +10,22 @@ firebase.initializeApp({
   messagingSenderId: "145535352146", 
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",});
 
-// Inicializar Firebase Messaging
 const messaging = firebase.messaging();
 
-// 📩 Escuchar notificaciones en segundo plano
+// Manejar mensajes en segundo plano
 messaging.onBackgroundMessage((payload) => {
-  console.log("📩 Notificación recibida en segundo plano:", payload);
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: "/assets/icons/icon.png",
+  console.log("📩 Notificación en segundo plano:", payload);
+
+  // Evitar que se muestre automáticamente si el payload tiene "notification"
+  if (payload.notification) {
+    return;
+  }
+
+  // Mostrar notificación manualmente si es un mensaje de datos
+  const { title, body } = payload.data;
+
+  self.registration.showNotification(title, {
+    body,
+    icon: "/assets/icons/icon.png"
   });
 });
