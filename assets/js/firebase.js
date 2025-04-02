@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"; // Importar autenticación
 
 // 🔥 Configuración de Firebase
 const firebaseConfig = {
@@ -15,32 +14,6 @@ const firebaseConfig = {
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
-
-// Inicializar Firebase Auth
-const auth = getAuth(app);
-
-// Función de autenticación anónima
-const signInAnonymouslyFn = async () => {
-  try {
-    const userCredential = await signInAnonymously(auth);
-    const user = userCredential.user;
-    console.log("Usuario autenticado de forma anónima:", user);
-  } catch (error) {
-    console.error("Error al autenticar de forma anónima:", error);
-  }
-};
-
-// Llamar a la función para autenticar al usuario anónimamente
-signInAnonymouslyFn();
-
-// Escuchar los cambios en el estado de autenticación
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("Usuario autenticado:", user);
-  } else {
-    console.log("No hay usuario autenticado.");
-  }
-});
 
 // ✅ Registrar el Service Worker
 if ("serviceWorker" in navigator) {
@@ -114,3 +87,4 @@ onMessage(messaging, (payload) => {
     icon: "/assets/icons/icon.png"
   });
 });
+
