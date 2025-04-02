@@ -64,6 +64,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Excluir Google Analytics de la caché
+  if (requestUrl.includes("google-analytics.com")) {
+    return fetch(event.request);
+  }
+
   console.log("Service Worker: Fetch", requestUrl);
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
@@ -91,7 +96,7 @@ importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-   apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  
+  apiKey: "AIzaSyDRjNrqGk5jec_TrjpiI_nY0H_hW70ODRI",  
   authDomain: "notificacionespeniel-29ab3.firebaseapp.com",
   projectId: "notificacionespeniel-29ab3",
   storageBucket: "notificacionespeniel-29ab3.firebasestorage.app",
