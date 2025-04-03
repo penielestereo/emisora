@@ -1,8 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-messaging.js";
-import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
-import { getPerformance } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-performance.js";
-import { getInAppMessaging, onMessageReceived, triggerEvent } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-in-app-messaging.js";
 
 // 🔥 Configuración de Firebase
 const firebaseConfig = {
@@ -12,50 +9,39 @@ const firebaseConfig = {
   storageBucket: "notificacionespeniel-29ab3.appspot.com",
   messagingSenderId: "145535352146",
   appId: "1:145535352146:web:5d08044df2a0c2e1594e8b",
-  measurementId: "G-VQ81GWZY1R"
 };
 
-// 🔹 Inicializar Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
-const analytics = getAnalytics(app);
-const performance = getPerformance(app);
-const inAppMessaging = getInAppMessaging(app);
-
-// 📊 Función para registrar eventos en Google Analytics
-const registrarEventoGA = (evento, datos = {}) => {
-  if (analytics) {
-    logEvent(analytics, evento, datos);
-    console.log(`📊 Evento registrado en GA: ${evento}`, datos);
-  } else {
-    console.warn("⚠️ Google Analytics no está inicializado.");
-  }
-};
 
 // ✅ Registrar el Service Worker
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
-      console.log("✅ Service Worker registrado correctamente:", registration);
+      console.log("✅ Service Worker registrado:", registration);
     })
     .catch((error) => {
       console.error("❌ Error registrando el Service Worker:", error);
     });
 }
 
-// 🚀 Solicitar permiso y obtener Token para Cloud Messaging
+// 🚀 Solicitar permiso y obtener Token
 const obtenerTokenFCM = async () => {
   try {
     const permiso = await Notification.requestPermission();
     if (permiso === "granted") {
-      console.log("✅ Permiso concedido para notificaciones");
+      console.log("✅ Permiso concedido");
+
       const token = await getToken(messaging, {
         vapidKey: "BAQpDysKX6ZAbzK3R2eh-JNX8DGnUm40RC-4XizxG6G3uHwX702GYNlTDfxmDaozmLaxWqXE7CtrIF4tw9RPYms"
       });
+
       if (token) {
         console.log("📌 Token obtenido:", token);
-        await enviarTokenAlBackend(token);
+        // Enviar el token al servidor para suscripción
+        enviarTokenAlBackend(token);
       } else {
         console.warn("⚠️ No se obtuvo token.");
       }
@@ -70,14 +56,16 @@ const obtenerTokenFCM = async () => {
 // 📩 Enviar el token al servidor
 const enviarTokenAlBackend = async (token) => {
   try {
-    const response = await fetch('https://167.86.114.193:3000/suscribir', {
+    const response = await fetch('https://167.86.114.193:3000/suscribir', {  // Asegúrate de que esta URL sea la correcta para tu servidor
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token })
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token: token })
     });
+
     if (response.ok) {
-      console.log("✅ Token enviado al backend correctamente.");
-      registrarEventoGA("token_enviado", { token });
+      console.log("✅ Token enviado al backend.");
     } else {
       console.warn("⚠️ Error al enviar el token al backend.");
     }
@@ -86,36 +74,16 @@ const enviarTokenAlBackend = async (token) => {
   }
 };
 
-// 📌 Llamar a la función para obtener el Token de Cloud Messaging
+// 📌 Llamar a la función
 obtenerTokenFCM();
 
 // 📩 Manejar notificaciones en primer plano
 onMessage(messaging, (payload) => {
   console.log("📬 Mensaje recibido en primer plano:", payload);
   const { title, body } = payload.notification;
-  if (Notification.permission === "granted") {
-    new Notification(title, { body, icon: "/assets/icons/icon.png" });
-    registrarEventoGA("notification_received", { title, body });
-  } else {
-    console.warn("⚠️ Notificación recibida, pero los permisos están bloqueados.");
-  }
-});
 
-// 🚀 **Configurar In-App Messaging**
-inAppMessaging.isAutomaticDataCollectionEnabled = true;
-
-// 🔥 Escuchar los mensajes dentro de la aplicación
-onMessageReceived(inAppMessaging, (message) => {
-  console.log("📩 In-App Message recibido:", message);
-  registrarEventoGA("in_app_message_received", { message });
-});
-
-// 🚀 Activar un evento manual para mostrar un mensaje dentro de la app
-const mostrarMensajeInApp = () => {
-  triggerEvent(inAppMessaging, "mensaje_interactivo");
-  registrarEventoGA("in_app_message_triggered");
-};
-
-// **Exportar Firebase y servicios**
-export { app, messaging, inAppMessaging, mostrarMensajeInApp, registrarEventoGA };
-
+  new Notification(title, {
+    body,
+    icon: "/assets/icons/icon.png"
+  });
+}); 
