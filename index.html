@@ -6,43 +6,38 @@
   <title>Peniel Estéreo</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="assets/img/logo.png">
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
-  
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQ81GWZY1R"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-VQ81GWZY1R');
-  </script>
 </head>
 <body>
   <div class="container">
+    <!-- Imagen Central -->
     <div class="central">
       <img src="assets/img/central.png" alt="Imagen Central">
     </div>
     
+    <!-- Logo -->
     <div class="logo">
       <img src="assets/img/logo.png" alt="Logo">
     </div>
 
+    <!-- Información de la Canción -->
     <div class="metadatos">
       <span id="artistaCancion">Cargando metadatos...</span>
     </div>
 
+    <!-- Animación de Sonido -->
     <div class="animacion-container">
       <div id="animacion"></div>
     </div>
 
+    <!-- Reproductor de Audio -->
     <div class="reproductor-container">
       <button id="playPauseBtn" class="btn">
         <img id="playPauseIcon" src="assets/img/play.png" alt="Play">
       </button>
     </div>
 
+    <!-- Botón Menú -->
     <div class="menu-btn-container">
       <button id="menuBtn" class="btn">
         <img src="assets/img/menu.png" alt="Menú" id="menuIcon">
@@ -67,19 +62,19 @@
     <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
       Instalar Peniel Estéreo
     </button>
+
   </div>
 
-  <!-- Scripts de Firebase y principal -->
+  <!-- Cargar los módulos de Firebase -->
+  <!-- Ahora Firebase ya no es importado aquí, sino en el archivo firebase.js -->
   <script type="module" src="assets/js/firebase.js"></script>
   <script type="module" src="assets/js/script.js"></script>
-  
+
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js")
-        .then((registration) => {
-          console.log("✅ Service Worker registrado con éxito:", registration.scope);
-        })
-        .catch((error) => console.error("❌ Error al registrar el Service Worker:", error));
+        .then(() => console.log("Service Worker registrado"))
+        .catch((error) => console.error("Error al registrar el Service Worker:", error));
     }
 
     let deferredPrompt;
@@ -92,7 +87,11 @@
         installButton.style.display = "none";
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
-          console.log(choiceResult.outcome === "accepted" ? "PWA instalada" : "PWA no instalada");
+          if (choiceResult.outcome === "accepted") {
+            console.log("PWA instalada");
+          } else {
+            console.log("PWA no instalada");
+          }
           deferredPrompt = null;
         });
       });
