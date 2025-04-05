@@ -58,6 +58,11 @@
       </div>
     </div>
 
+    <!-- Botón de Noticias -->
+    <button id="newsButton" style="position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
+      Noticias
+    </button>
+
     <!-- Botón de instalación de la PWA -->
     <button id="installButton" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2196f2; color: white; border: none; padding: 10px; border-radius: 5px; z-index: 1000;">
       Instalar Peniel Estéreo
@@ -66,17 +71,18 @@
   </div>
 
   <!-- Cargar los módulos de Firebase -->
-  <!-- Ahora Firebase ya no es importado aquí, sino en el archivo firebase.js -->
   <script type="module" src="assets/js/firebase.js"></script>
   <script type="module" src="assets/js/script.js"></script>
 
   <script>
+    // Service Worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js")
         .then(() => console.log("Service Worker registrado"))
         .catch((error) => console.error("Error al registrar el Service Worker:", error));
     }
 
+    // Botón de instalación
     let deferredPrompt;
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
@@ -95,6 +101,12 @@
           deferredPrompt = null;
         });
       });
+    });
+
+    // Acción del botón de noticias
+    const newsButton = document.getElementById("newsButton");
+    newsButton.addEventListener("click", () => {
+      window.location.href = "noticias.html"; // Cambia a la URL deseada
     });
   </script>
 </body>
